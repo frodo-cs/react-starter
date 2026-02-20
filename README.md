@@ -1,6 +1,6 @@
-# React + Vite Boilerplate
+# React Starter
 
-A modern, high-performance React application boilerplate built with the latest technologies. This template is designed for scale, maintainability, and a premium developer experience.
+A modern, high-performance React application starter built with the latest technologies. This template is designed for scale, maintainability, and a premium developer experience.
 
 ## Tech Stack
 
