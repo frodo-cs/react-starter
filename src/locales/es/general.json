@@ -1,0 +1,19 @@
+{
+  "general": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "actions": "Acciones",
+    "loading": "Cargando...",
+    "noResults": "No se encontraron resultados",
+    "unexpectedError": "Ocurrió un error inesperado"
+  },
+  "navigation": {
+    "dashboard": "Panel de control"
+  },
+  "layout": {
+    "sidebar": "Menú lateral",
+    "contact": "Contacto"
+  }
+}

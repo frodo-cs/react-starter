@@ -1,0 +1,44 @@
+{
+  "unauthorized": {
+    "title": "Sesión Expirada",
+    "message": "Tu sesión ha expirado. Por favor, inicia sesión de nuevo para continuar.",
+    "actions": {
+      "login": "Ir al Inicio de Sesión",
+      "back": "Volver"
+    }
+  },
+  "forbidden": {
+    "title": "Acceso Denegado",
+    "message": "No tienes permiso para acceder a este recurso.",
+    "actions": {
+      "back": "Volver"
+    }
+  },
+  "notFound": {
+    "title": "Página No Encontrada",
+    "message": "La página que buscas no existe o ha sido movida.",
+    "actions": {
+      "home": "Ir al Inicio",
+      "back": "Volver"
+    }
+  },
+  "internalServerError": {
+    "title": "Error del Servidor",
+    "message": "Algo salió mal por nuestra parte. Por favor, inténtalo de nuevo más tarde.",
+    "actions": {
+      "back": "Volver"
+    }
+  },
+  "maintenanceError": {
+    "title": "En Mantenimiento",
+    "message": "La aplicación está en mantenimiento. Por favor, vuelve pronto.",
+    "actions": {
+      "back": "Volver"
+    }
+  },
+  "toasts": {
+    "content_not_modified": "El contenido no ha sido modificado.",
+    "session_expired": "Tu sesión ha expirado. Por favor, inicia sesión de nuevo.",
+    "internal_server_error": "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
+  }
+}

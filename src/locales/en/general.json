@@ -1,0 +1,19 @@
+{
+  "general": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "navigation": {
+    "dashboard": "Dashboard"
+  },
+  "layout": {
+    "sidebar": "Sidebar",
+    "contact": "Contact"
+  }
+}

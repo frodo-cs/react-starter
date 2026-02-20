@@ -1,0 +1,44 @@
+{
+  "unauthorized": {
+    "title": "Session Expired",
+    "message": "Your session has expired. Please log in again to continue.",
+    "actions": {
+      "login": "Go to Login",
+      "back": "Go Back"
+    }
+  },
+  "forbidden": {
+    "title": "Access Denied",
+    "message": "You don't have permission to access this resource.",
+    "actions": {
+      "back": "Go Back"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "actions": {
+      "home": "Go Home",
+      "back": "Go Back"
+    }
+  },
+  "internalServerError": {
+    "title": "Server Error",
+    "message": "Something went wrong on our end. Please try again later.",
+    "actions": {
+      "back": "Go Back"
+    }
+  },
+  "maintenanceError": {
+    "title": "Under Maintenance",
+    "message": "The application is under maintenance. Please check back soon.",
+    "actions": {
+      "back": "Go Back"
+    }
+  },
+  "toasts": {
+    "content_not_modified": "The content has not been modified.",
+    "session_expired": "Your session has expired. Please log in again.",
+    "internal_server_error": "Something went wrong. Please try again later."
+  }
+}

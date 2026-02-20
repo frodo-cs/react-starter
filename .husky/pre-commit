@@ -1,0 +1,16 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Checking code formatting..."
+pnpm format:check || {
+  echo "❌ Code formatting issues found. Run 'pnpm format' to fix."
+  exit 1
+}
+
+echo "🔍 Running ESLint..."
+pnpm lint || {
+  echo "❌ Lint errors found."
+  exit 1
+}
+
+echo "✅ Pre-commit checks passed!"
