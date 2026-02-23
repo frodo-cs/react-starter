@@ -10,7 +10,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/constant/routes'
 
-export function Sidebar() {
+type SidebarProps = {
+  onItemClick?: () => void
+}
+
+export function Sidebar({ onItemClick }: SidebarProps) {
   const { t } = useTranslation('general')
 
   const navItems = [
@@ -39,6 +43,7 @@ export function Sidebar() {
             <Link
               key={item.label}
               to={item.to}
+              onClick={onItemClick}
               activeProps={{
                 className:
                   'bg-primary text-primary-foreground shadow-lg shadow-primary/20',
