@@ -83,6 +83,7 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 | Script         | Command                | Description                                                                                |
 | :------------- | :--------------------- | :----------------------------------------------------------------------------------------- |
 | `dev`          | `vite`                 | Starts the development server with Hot Module Replacement (HMR).                           |
+| `mock`         | `vite --mode mock`     | Starts the development server with MSW enabled for local API mocking.                      |
 | `build`        | `tsc -b && vite build` | Compiles TypeScript and builds the production bundle in the `dist/` directory.             |
 | `test`         | `vitest`               | Runs the test suite using [Vitest](https://vitest.dev/).                                   |
 | `lint`         | `eslint .`             | Analyzes code for potential errors and styling issues using [ESLint](https://eslint.org/). |
@@ -92,7 +93,7 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 | `knip`         | `knip`                 | Finds unused files, dependencies, and exports to keep the bundle lean.                     |
 | `prepare`      | `husky`                | Automatically sets up Git hooks for local development.                                     |
 
-> **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
+> **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint via `lint-staged`. Commit messages are also enforced using **commitlint** with the [Conventional Commits](https://www.conventionalcommits.org/) standard. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
 
 ## Environment Variables
 
