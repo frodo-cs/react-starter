@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Header } from './header'
 import { Sidebar } from './sidebar'
 import { Contact } from './information'
@@ -15,6 +15,18 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)')
+    const onChange = () => {
+      if (mql.matches) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
   return (
     <div className='flex min-h-screen flex-col bg-background'>
       <Header onMenuClick={toggleMobileMenu} />
@@ -29,12 +41,12 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 
         {/* Mobile */}
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-full transform bg-background p-4 transition-transform duration-300 ease-in-out lg:hidden ${
+          className={`fixed inset-y-0 left-0 z-50 w-full transform bg-background p-4 transition-transform duration-300 ease-in-out sm:w-1/2 lg:hidden ${
             isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <div className='flex h-full flex-col gap-4'>
-            <div className='flex items-center justify-between md:hidden'>
+            <div className='flex items-center justify-between lg:hidden'>
               <span className='font-bold'>Menu</span>
               <Button
                 variant='ghost'
@@ -50,7 +62,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
         </aside>
 
         {/* Desktop */}
-        <aside className='hidden w-72 shrink-0 p-4 md:block'>
+        <aside className='hidden w-72 shrink-0 p-4 lg:block'>
           <div className='flex h-full flex-col gap-4 overflow-y-auto'>
             <Sidebar />
             <Contact />
