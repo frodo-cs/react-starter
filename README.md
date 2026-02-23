@@ -74,3 +74,25 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 | `format:check` | `prettier --check .`   | Checks if the codebase follows the Prettier formatting rules.                              |
 | `knip`         | `knip`                 | Finds unused files, dependencies, and exports to keep the bundle lean.                     |
 | `prepare`      | `husky`                | Automatically sets up Git hooks for local development.                                     |
+
+## Deployment
+
+The project includes a GitHub Actions workflow for automated deployment to AWS S3 and CloudFront.
+
+### GitHub Actions Workflow
+
+The workflow is located at `.github/workflows/build-and-deploy.yml`. It triggers on every push to the `main` branch.
+
+#### Prerequisites
+
+To use the automated deployment, you must configure the following **GitHub Action Secrets**:
+
+| Secret Key               | Description                                                   |
+| :----------------------- | :------------------------------------------------------------ |
+| `AWS_ROLE_ARN`           | The ARN of the IAM Role created for GitHub Actions.           |
+| `S3_BUCKET_NAME`         | The name of the S3 bucket where the app will be hosted.       |
+| `AWS_CLOUDFRONT_DIST_ID` | The ID of the CloudFront distribution to invalidate.          |
+| `VITE_API_BASE_URL`      | The base URL for your API, injected during the build process. |
+
+> [!NOTE]
+> The deployment uses **OIDC** for authentication, which is more secure than using IAM User Access Keys. Ensure you have an IAM Role configured with a trust relationship for GitHub Actions before setting up the secrets.
