@@ -11,6 +11,9 @@ import type { AnyRouter } from '@tanstack/react-router'
 let routerInstance: AnyRouter | null = null
 
 export function setRouterInstance(router: AnyRouter) {
+  if (routerInstance) {
+    return
+  }
   routerInstance = router
 }
 
@@ -25,4 +28,8 @@ export function requireRouterInstance(): AnyRouter {
     )
   }
   return routerInstance
+}
+
+export function _resetRouterInstance() {
+  routerInstance = null
 }

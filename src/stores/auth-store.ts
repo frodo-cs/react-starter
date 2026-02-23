@@ -2,14 +2,14 @@ import type { AuthUser } from '@/features/auth/interfaces/auth'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-interface AuthState {
+interface AuthStoreData {
   user: AuthUser | null
   accessToken: string | null
-  setAuth: (user: AuthUser, accessToken: string | null) => void
+  setAuth: (user: AuthUser, accessToken: string) => void
   logout: () => void
 }
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<AuthStoreData>()(
   persist(
     (set) => ({
       user: null,
@@ -22,10 +22,11 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        // accessToken: state.accessToken,
+        accessToken: state.accessToken,
       }),
     }
   )
 )
 
 export type AuthStore = typeof useAuthStore
+export type AuthState = ReturnType<AuthStore['getState']>

@@ -1,5 +1,5 @@
 import { isAxiosError } from 'axios'
-import i18n from '@/config/i18n'
+import i18n from '@/configs/i18n'
 
 export function getErrorMessage(error: unknown) {
   if (isAxiosError(error)) {

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import i18n from '@/config/i18n'
+import i18n from '@/configs/i18n'
 
 export const signUpSchema = z
   .object({

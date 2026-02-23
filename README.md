@@ -23,8 +23,8 @@ src/
 ├── api/            # API configuration and global instances
 ├── assets/         # Static assets (images, fonts, etc.)
 ├── components/     # Shared UI components (Shadcn + Custom)
-├── config/         # Global configuration files
-├── constant/       # Global constants and enums
+├── configs/         # Global configuration files
+├── constants/       # Global constants and enums
 ├── features/       # Feature-specific logic, pages, and components
 │   ├── auth/       # Authentication flow
 │   └── errors/     # Specialized error pages
@@ -36,6 +36,9 @@ src/
 ├── styles/         # Global styles and Tailwind configuration
 └── test/           # Test setup and generic utilities
 ```
+
+> [!IMPORTANT]
+> **Security Note**: By default, this starter persists the `accessToken` in `localStorage` for a seamless developer experience. For production applications with high security requirements, consider implementing a secure, HttpOnly cookie-based approach or short-lived tokens with refresh logic.
 
 ### Component & Route Generators
 
@@ -143,7 +146,7 @@ The workflow is located at `.github/workflows/build-and-deploy.yml`. It triggers
 
 #### Prerequisites
 
-To use the automated deployment, you must configure the following **GitHub Action Secrets**:
+To use the automated deployment, you must create an IAM Role via OIDC and configure the following **GitHub Action Secrets**:
 
 | Secret Key               | Description                                                   |
 | :----------------------- | :------------------------------------------------------------ |
@@ -151,6 +154,3 @@ To use the automated deployment, you must configure the following **GitHub Actio
 | `S3_BUCKET_NAME`         | The name of the S3 bucket where the app will be hosted.       |
 | `AWS_CLOUDFRONT_DIST_ID` | The ID of the CloudFront distribution to invalidate.          |
 | `VITE_API_BASE_URL`      | The base URL for your API, injected during the build process. |
-
-> [!NOTE]
-> The deployment uses **OIDC** for authentication, which is more secure than using IAM User Access Keys. Ensure you have an IAM Role configured with a trust relationship for GitHub Actions before setting up the secrets.

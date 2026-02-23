@@ -1,6 +1,6 @@
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 import { Button } from '@/components/ui/button'
 import {
   Card,

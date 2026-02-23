@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { useRegister } from '../hooks/use-register'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 type FormData = z.infer<typeof signUpSchema>
 
@@ -29,13 +29,19 @@ export function SignUpForm() {
   })
 
   async function onSubmit(data: FormData) {
-    await toast.promise(mutateAsync(data), {
-      loading: t('signUp.toast.loading'),
-      success: t('signUp.toast.success'),
-      error: (error: unknown) =>
-        t('signUp.toast.error', { error: getErrorMessage(error) }),
-    })
-    navigate({ to: ROUTES.SIGN_IN })
+    try {
+      const registerPromise = mutateAsync(data)
+      await toast.promise(registerPromise, {
+        loading: t('signUp.toast.loading'),
+        success: t('signUp.toast.success'),
+        error: (error: unknown) =>
+          t('signUp.toast.error', { error: getErrorMessage(error) }),
+      })
+      await registerPromise
+      navigate({ to: ROUTES.SIGN_IN })
+    } catch {
+      // error already handled by toast
+    }
   }
 
   return (

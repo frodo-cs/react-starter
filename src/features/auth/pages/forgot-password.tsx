@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ArrowLeft } from 'lucide-react'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 export function ForgotPassword() {
   const [submitted, setSubmitted] = useState(false)

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 export function SignUp() {
   const { t } = useTranslation('auth')

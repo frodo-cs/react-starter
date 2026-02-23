@@ -1,7 +1,11 @@
-import type { Credentials } from '@/features/auth/interfaces/api'
-import { apiClient } from '@/api/axios-instance'
+import type {
+  Credentials,
+  SignUpPayload,
+  ForgotPasswordPayload,
+} from '@/features/auth/interfaces/api'
+import { apiClient } from '@/lib/api/axios-instance'
 import type { IAuthAdapter, LoginResponse } from './auth-base.adapter'
-import { ENDPOINTS } from '@/constant/endpoints'
+import { ENDPOINTS } from '@/constants/endpoints'
 
 interface LoginResponseMockDTO {
   accessToken: string
@@ -38,5 +42,19 @@ export class AuthAdapterMock implements IAuthAdapter {
     )
 
     return this.transform(response.data)
+  }
+
+  async register(payload: SignUpPayload): Promise<void> {
+    await apiClient.post(`${this.baseUrl}/${ENDPOINTS.REGISTER}`, {
+      name: payload.name,
+      email: payload.email,
+      password: payload.password,
+    })
+  }
+
+  async forgotPassword(payload: ForgotPasswordPayload): Promise<void> {
+    await apiClient.post(`${this.baseUrl}/${ENDPOINTS.FORGOT_PASSWORD}`, {
+      email: payload.email,
+    })
   }
 }

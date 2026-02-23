@@ -11,7 +11,7 @@ import { useLogin } from '../hooks/use-login'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import type { AuthUser } from '../interfaces/auth'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 type FormData = z.infer<typeof signInSchema>
 
@@ -32,18 +32,22 @@ export function SignInForm() {
   })
 
   async function onSubmit(data: FormData) {
-    const loginPromise = mutateAsync(data)
-    toast.promise(loginPromise, {
-      loading: t('signIn.toast.loading'),
-      success: (response: { user: AuthUser }) =>
-        t('signIn.toast.success', { identifier: response.user.username }),
-      error: (error: unknown) =>
-        t('signIn.toast.error', { error: getErrorMessage(error) }),
-    })
-    await loginPromise
-    await router.invalidate()
-    const targetPath = (redirect as string) || ROUTES.HOME
-    navigate({ to: targetPath, replace: true })
+    try {
+      const loginPromise = mutateAsync(data)
+      toast.promise(loginPromise, {
+        loading: t('signIn.toast.loading'),
+        success: (response: { user: AuthUser }) =>
+          t('signIn.toast.success', { identifier: response.user.username }),
+        error: (error: unknown) =>
+          t('signIn.toast.error', { error: getErrorMessage(error) }),
+      })
+      await loginPromise
+      await router.invalidate()
+      const targetPath = (redirect as string) || ROUTES.HOME
+      navigate({ to: targetPath, replace: true })
+    } catch {
+      // error already handled by toast
+    }
   }
 
   return (

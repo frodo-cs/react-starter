@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '../ui/card'
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 type SidebarProps = {
   onItemClick?: () => void

@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import { LogOut, Menu } from 'lucide-react'
-import { ROUTES } from '@/constant/routes'
+import { ROUTES } from '@/constants/routes'
 
 type HeaderProps = {
   onMenuClick?: () => void

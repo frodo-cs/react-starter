@@ -29,13 +29,19 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
   })
 
   async function onSubmit(data: FormData) {
-    await toast.promise(mutateAsync(data), {
-      loading: t('forgotPassword.toast.loading'),
-      success: t('forgotPassword.toast.success'),
-      error: (error: unknown) =>
-        t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
-    })
-    onSuccess?.()
+    try {
+      const passwordResetPromise = mutateAsync(data)
+      await toast.promise(passwordResetPromise, {
+        loading: t('forgotPassword.toast.loading'),
+        success: t('forgotPassword.toast.success'),
+        error: (error: unknown) =>
+          t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
+      })
+      await passwordResetPromise
+      onSuccess?.()
+    } catch {
+      // error already handled by toast
+    }
   }
 
   return (

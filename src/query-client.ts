@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios'
 import { QueryCache, QueryClient, MutationCache } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import i18n from '@/config/i18n'
+import i18n from '@/configs/i18n'
 import { useAuthStore } from '@/stores/auth-store'
 import { handleServerError } from './lib/handle-server-error'
-import { ROUTES } from './constant/routes'
-import { ENDPOINTS } from './constant/endpoints'
+import { ROUTES } from './constants/routes'
+import { ENDPOINTS } from './constants/endpoints'
 import { getRouterInstance } from '@/lib/router-instance'
 
 /**
@@ -25,7 +25,10 @@ const handleGlobalError = (error: unknown) => {
         toast.error(i18n.t('error:toasts.session_expired'))
         useAuthStore.getState().logout()
         if (routerInstance) {
-          const redirect = `${routerInstance.history.location.href}`
+          const rawRedirect = routerInstance.history.location.href
+          const redirect = rawRedirect?.startsWith('/')
+            ? rawRedirect
+            : undefined
           routerInstance.navigate({
             to: ROUTES.SIGN_IN,
             search: { redirect },

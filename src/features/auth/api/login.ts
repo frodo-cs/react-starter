@@ -1,4 +1,4 @@
-import { authAdapter } from '@/api/config'
+import { authAdapter } from '@/lib/api/config'
 import type { Credentials, LoginResponse } from '../interfaces/api'
 
 export const login = async (

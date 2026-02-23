@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
-import tokenScheme from '@/constant/tokenScheme'
+import tokenScheme from '@/constants/tokenScheme'
 
 export const apiClient = axios.create({
   timeout: 10000,

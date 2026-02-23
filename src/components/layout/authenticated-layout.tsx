@@ -16,6 +16,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
   useEffect(() => {
+    if (!window) return
     const mql = window.matchMedia('(min-width: 1024px)')
     const onChange = () => {
       if (mql.matches) {
