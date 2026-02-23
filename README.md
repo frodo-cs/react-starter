@@ -16,19 +16,33 @@ A modern, high-performance React application starter built with the latest techn
 
 ## Architecture
 
-The project follows a **Feature-Based Architecture**, ensuring high modularity and clear separation of concerns:
+The project follows a **Feature-Based Architecture**, ensuring high modularity and clear separation of concerns. Additionally, it implements an **Adapter Pattern** for all API communication, allowing the UI to remain ignorant of the backend implementation (e.g., easily switching between a local mock environment and a production REST API).
 
 ```text
 src/
+├── api/            # API configuration and global instances
+├── assets/         # Static assets (images, fonts, etc.)
 ├── components/     # Shared UI components (Shadcn + Custom)
+├── config/         # Global configuration files
+├── constant/       # Global constants and enums
 ├── features/       # Feature-specific logic, pages, and components
 │   ├── auth/       # Authentication flow
 │   └── errors/     # Specialized error pages
-├── locales/        # Translation files (JSON)
+├── lib/            # Utility libraries and wrappers
+├── locales/        # Translation files (EN/ES)
+├── mocks/          # MSW mock handlers and configuration
 ├── routes/         # TanStack Router type-safe route definitions
 ├── stores/         # State management with Zustand
-└── styles/         # Global styles and Tailwind configuration
+├── styles/         # Global styles and Tailwind configuration
+└── test/           # Test setup and generic utilities
 ```
+
+### Component & Route Generators
+
+This starter uses tools that provide CLI generation out of the box:
+
+- **Routing**: Simply create a file in `src/routes/` and TanStack router will automatically generate the types and route tree.
+- **UI Components**: To add a new UI component, run `npx shadcn-ui@latest add [component]` and it will be placed in `src/components/ui`.
 
 ## Localization
 
@@ -39,7 +53,7 @@ To add a new language:
 1. Create a new folder in `src/locales/`.
 2. Update the `i18n.ts` configuration.
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -74,6 +88,50 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 | `format:check` | `prettier --check .`   | Checks if the codebase follows the Prettier formatting rules.                              |
 | `knip`         | `knip`                 | Finds unused files, dependencies, and exports to keep the bundle lean.                     |
 | `prepare`      | `husky`                | Automatically sets up Git hooks for local development.                                     |
+
+> **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
+
+## Environment Variables
+
+Environment variables are managed per Vite's standard implementation. All variables exposed to the client must be prefixed with `VITE_`.
+
+### Base Configuration
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+2. Update the values in `.env` based on your local setup (e.g., pointing `VITE_API_BASE_URL` to your local backend).
+
+### Environment-Specific Files
+
+Vite allows you to override variables based on the execution "mode" using `.env.[mode]` files:
+
+- **`.env`**: Loaded in all cases (lowest priority).
+- **`.env.local`**: Loaded in all cases, ignored by git (always overrides).
+- **`.env.mock`**: Specifically loaded when running `pnpm mock`. It empties the `VITE_API_BASE_URL` to ensure the app intercepts requests locally.
+
+**Available Variables:**
+| Variable | Description |
+| :------------------ | :---------------------------------------------------------------------------------------------- |
+| `VITE_API_BASE_URL` | The fully qualified URL to your backend REST API (e.g., `http://localhost:8000`). |
+
+## Mocking
+
+The project uses [MSW (Mock Service Worker)](https://mswjs.io/) to mock API requests during local development. This allows you to work on the UI without relying on a live backend.
+
+### Running with Mocks
+
+To start the development server with MSW enabled, run:
+
+```bash
+pnpm mock
+```
+
+### Adding New Mocks
+
+1. **Handlers**: Add new MSW interceptors in `src/mocks/handlers.ts`.
+2. **Adapters**: Ensure your mock adapter in `src/features/[feature]/adapters/[name]-mock.adapter.ts` is registered in `src/api/config.ts`.
 
 ## Deployment
 

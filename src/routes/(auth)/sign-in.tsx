@@ -9,7 +9,9 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute('/(auth)/sign-in')({
   beforeLoad: ({ context, search }) => {
-    if (context.auth.accessToken) {
+    const { accessToken } = context.auth.getState()
+
+    if (accessToken) {
       throw redirect({
         to: search.redirect || ROUTES.HOME,
       })

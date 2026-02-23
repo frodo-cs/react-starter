@@ -32,23 +32,24 @@ export function SignInForm() {
   })
 
   async function onSubmit(data: FormData) {
-    await toast.promise(mutateAsync(data), {
+    const loginPromise = mutateAsync(data)
+    toast.promise(loginPromise, {
       loading: t('signIn.toast.loading'),
       success: (response: { user: AuthUser }) =>
         t('signIn.toast.success', { identifier: response.user.username }),
       error: (error: unknown) =>
         t('signIn.toast.error', { error: getErrorMessage(error) }),
     })
-
+    await loginPromise
     await router.invalidate()
     const targetPath = (redirect as string) || ROUTES.HOME
     navigate({ to: targetPath, replace: true })
   }
 
   return (
-    <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
-      <div className='space-y-4'>
-        <div className='space-y-2'>
+    <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
+      <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='email'>{t('signIn.fields.email.label')}</Label>
           <Input
             id='email'
@@ -58,14 +59,14 @@ export function SignInForm() {
             {...register('email')}
           />
           {errors.email && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
-              <span className='h-1 w-1 rounded-full bg-destructive'></span>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+              <span className='mr-1 h-1 w-1 rounded-full bg-destructive'></span>
               {errors.email.message}
             </span>
           )}
         </div>
 
-        <div className='space-y-2'>
+        <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
             <Label htmlFor='password'>
               {t('signIn.fields.password.label')}
@@ -85,8 +86,8 @@ export function SignInForm() {
             {...register('password')}
           />
           {errors.password && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
-              <span className='h-1 w-1 rounded-full bg-destructive'></span>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+              <span className='mr-1 h-1 w-1 rounded-full bg-destructive'></span>
               {errors.password.message}
             </span>
           )}

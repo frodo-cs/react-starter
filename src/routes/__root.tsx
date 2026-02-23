@@ -6,15 +6,11 @@ import { Toaster } from '@/components/ui/sonner'
 import { NavigationProgress } from '@/components/navigation-progress'
 import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
-import { type AuthUser } from '@/features/auth/interfaces/auth'
+import type { AuthStore } from '@/stores/auth-store'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
-  auth: {
-    user: AuthUser | null
-    accessToken: string | null
-    logout: () => void
-  }
+  auth: AuthStore
 }>()({
   component: () => {
     return (
@@ -22,7 +18,7 @@ export const Route = createRootRouteWithContext<{
         <NavigationProgress />
         <Outlet />
         <Toaster duration={5000} />
-        {import.meta.env.MODE === 'development' && (
+        {!import.meta.env.PROD && (
           <>
             <ReactQueryDevtools buttonPosition='bottom-left' />
             <TanStackRouterDevtools position='bottom-right' />

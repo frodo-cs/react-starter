@@ -4,7 +4,9 @@ import { ROUTES } from '@/constant/routes'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context, location }) => {
-    if (!context.auth.accessToken) {
+    const { accessToken } = context.auth.getState()
+
+    if (!accessToken) {
       throw redirect({
         to: ROUTES.SIGN_IN,
         search: {

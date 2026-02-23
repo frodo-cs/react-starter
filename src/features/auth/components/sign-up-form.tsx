@@ -39,9 +39,9 @@ export function SignUpForm() {
   }
 
   return (
-    <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
-      <div className='space-y-4'>
-        <div className='space-y-2'>
+    <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
+      <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='name'>{t('signUp.fields.name.label')}</Label>
           <Input
             id='name'
@@ -51,13 +51,13 @@ export function SignUpForm() {
             {...register('name')}
           />
           {errors.name && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
               {errors.name.message}
             </span>
           )}
         </div>
 
-        <div className='space-y-2'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='email'>{t('signUp.fields.email.label')}</Label>
           <Input
             id='email'
@@ -67,13 +67,13 @@ export function SignUpForm() {
             {...register('email')}
           />
           {errors.email && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
               {errors.email.message}
             </span>
           )}
         </div>
 
-        <div className='space-y-2'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='password'>{t('signUp.fields.password.label')}</Label>
           <Input
             id='password'
@@ -83,13 +83,13 @@ export function SignUpForm() {
             {...register('password')}
           />
           {errors.password && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
               {errors.password.message}
             </span>
           )}
         </div>
 
-        <div className='space-y-2'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='confirmPassword'>
             {t('signUp.fields.confirmPassword.label')}
           </Label>
@@ -101,7 +101,7 @@ export function SignUpForm() {
             {...register('confirmPassword')}
           />
           {errors.confirmPassword && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
               {errors.confirmPassword.message}
             </span>
           )}

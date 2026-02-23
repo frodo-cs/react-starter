@@ -5,7 +5,6 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 interface AuthState {
   user: AuthUser | null
   accessToken: string | null
-  tokenScheme: 'Bearer' | 'Zoho-oauthtoken'
   setAuth: (user: AuthUser, accessToken: string | null) => void
   logout: () => void
 }
@@ -15,7 +14,6 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       accessToken: null,
-      tokenScheme: 'Bearer',
       setAuth: (user, accessToken) => set({ user, accessToken }),
       logout: () => set({ user: null, accessToken: null }),
     }),
@@ -24,8 +22,10 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        tokenScheme: state.tokenScheme,
+        // accessToken: state.accessToken,
       }),
     }
   )
 )
+
+export type AuthStore = typeof useAuthStore

@@ -39,9 +39,9 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
   }
 
   return (
-    <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
-      <div className='space-y-4'>
-        <div className='space-y-2'>
+    <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
+      <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <Label htmlFor='email'>
             {t('forgotPassword.fields.email.label')}
           </Label>
@@ -53,7 +53,8 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
             {...register('email')}
           />
           {errors.email && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+              <span className='mr-1 h-1 w-1 rounded-full bg-destructive'></span>
               {errors.email.message}
             </span>
           )}

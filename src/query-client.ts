@@ -8,6 +8,14 @@ import { ROUTES } from './constant/routes'
 import { ENDPOINTS } from './constant/endpoints'
 import { getRouterInstance } from '@/lib/router-instance'
 
+/**
+ * Global API Error Handler.
+ *
+ * Intercepts all failed queries and mutations across the application.
+ * Automatically handles 401 (Unauthorized) by logging the user out and
+ * redirecting to the sign-in page, and manages other generic HTTP errors
+ * like 500 (Server Error) and 403 (Forbidden).
+ */
 const handleGlobalError = (error: unknown) => {
   if (error instanceof AxiosError) {
     if (error.response?.status === 401) {

@@ -45,8 +45,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
               to={item.to}
               onClick={onItemClick}
               activeProps={{
-                className:
-                  'bg-primary text-primary-foreground shadow-lg shadow-primary/20',
+                className: 'bg-primary text-primary-foreground',
               }}
               inactiveProps={{
                 className:
