@@ -95,6 +95,8 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 
 > **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint via `lint-staged`. Commit messages are also enforced using **commitlint** with the [Conventional Commits](https://www.conventionalcommits.org/) standard. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
 
+> **Tip**: This project has [Commitizen](https://commitizen-tools.github.io/commitizen/) set up. Run `pnpm cz` instead of `git commit` for a guided conventional commit experience.
+
 ## Environment Variables
 
 Environment variables are managed per Vite's standard implementation. All variables exposed to the client must be prefixed with `VITE_`.
