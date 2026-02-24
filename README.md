@@ -22,7 +22,6 @@ The project follows a **Feature-Based Architecture**, ensuring high modularity a
 
 ```text
 src/
-├── api/            # API configuration and global instances
 ├── assets/         # Static assets (images, fonts, etc.)
 ├── components/     # Shared UI components (Shadcn + Custom)
 ├── configs/         # Global configuration files
@@ -31,6 +30,8 @@ src/
 │   ├── auth/       # Authentication flow
 │   └── errors/     # Specialized error pages
 ├── lib/            # Utility libraries and wrappers
+│   ├── api/        # API configuration and adapter registry
+│   └── ...
 ├── locales/        # Translation files (EN/ES)
 ├── mocks/          # MSW mock handlers and configuration
 ├── routes/         # TanStack Router type-safe route definitions
@@ -124,6 +125,8 @@ Vite allows you to override variables based on the execution "mode" using `.env.
 | Variable | Description |
 | :------------------ | :---------------------------------------------------------------------------------------------- |
 | `VITE_API_BASE_URL` | The fully qualified URL to your backend REST API (e.g., `http://localhost:8000`). |
+| `VITE_EMAIL_GATE` | Enables pre-registration check. When `true`, users must provide an email that exists in the `clients` list before seeing the registration form. |
+| `VITE_ACCOUNT_VERIFY` | Enables verification code screen after signup. When `true`, registration redirects to verify instead of login. |
 
 ## Mocking
 
@@ -140,7 +143,7 @@ pnpm mock
 ### Adding New Mocks
 
 1. **Handlers**: Add new MSW interceptors in `src/mocks/handlers.ts`.
-2. **Adapters**: Ensure your mock adapter in `src/features/[feature]/adapters/[name]-mock.adapter.ts` is registered in `src/api/config.ts`.
+2. **Adapters**: Ensure your mock adapter in `src/features/[feature]/adapters/[name]-mock.adapter.ts` is registered in `src/lib/api/config.ts`.
 
 ## Deployment
 

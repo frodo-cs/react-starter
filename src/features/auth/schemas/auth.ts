@@ -20,6 +20,13 @@ export const signInSchema = z.object({
   password: z.string().min(1, i18n.t('auth:validation.passwordRequired')),
 })
 
-export const forgotPasswordSchema = z.object({
+export const emailSchema = z.object({
   email: z.email(i18n.t('auth:validation.emailInvalid')),
+})
+
+export const verificationSchema = z.object({
+  code: z
+    .string()
+    .length(6, i18n.t('auth:validation.codeLength'))
+    .regex(/^\d+$/, i18n.t('auth:validation.codeNumeric')),
 })

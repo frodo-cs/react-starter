@@ -1,14 +1,35 @@
 import type {
   Credentials,
   SignUpPayload,
-  ForgotPasswordPayload,
+  EmailPayload,
+  VerifyPayload,
 } from '@/features/auth/interfaces/api'
-import type { AuthUser } from '@/features/auth/interfaces/auth'
+import type { AuthUser, UserCheck } from '@/features/auth/interfaces/auth'
 
 export interface LoginResponse {
-  token: string
-  user: AuthUser
+  verified?: boolean
+  token?: string
+  user?: AuthUser
 }
+
+export interface EmailGateResponse {
+  user: UserCheck | null
+}
+
+export interface VerifyResponse {
+  verified: boolean
+}
+
+/**
+ * Standardized error tokens for authentication flows.
+ * Adapters should throw errors with these messages to ensure
+ * the API layer remains implementation-agnostic.
+ */
+export const AUTH_ERRORS = {
+  USER_NOT_FOUND: 'userNotFound',
+  INVALID_CODE: 'invalidCode',
+  EMAIL_ALREADY_IN_USE: 'emailAlreadyInUse',
+} as const
 
 /**
  * Base contract for Authentication Adapters.
@@ -32,5 +53,21 @@ export interface IAuthAdapter {
   /**
    * Sends a password reset email to the provided address.
    */
-  forgotPassword(payload: ForgotPasswordPayload): Promise<void>
+  forgotPassword(payload: EmailPayload): Promise<void>
+
+  /**
+   * Validates the user's email against our records.
+   */
+  emailGate(payload: EmailPayload): Promise<EmailGateResponse>
+
+  /**
+   * Verifies the user's account using the code sent to their email.
+   * Returns whether verification succeeded.
+   */
+  verify(payload: VerifyPayload): Promise<VerifyResponse>
+
+  /**
+   * Resends the verification code to the user's email.
+   */
+  resendCode(payload: EmailPayload): Promise<void>
 }

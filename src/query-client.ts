@@ -3,7 +3,6 @@ import { QueryCache, QueryClient, MutationCache } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import i18n from '@/configs/i18n'
 import { useAuthStore } from '@/stores/auth-store'
-import { handleServerError } from './lib/handle-server-error'
 import { ROUTES } from './constants/routes'
 import { ENDPOINTS } from './constants/endpoints'
 import { getRouterInstance } from '@/lib/router-instance'
@@ -78,7 +77,6 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
       handleGlobalError(error)
-      handleServerError(error)
     },
   }),
 })

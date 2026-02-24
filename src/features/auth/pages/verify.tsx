@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { SignInForm } from '../components/sign-in-form'
+import { VerificationForm } from '../components/verification-form'
 import {
   Card,
   CardContent,
@@ -10,9 +10,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ROUTES } from '@/constants/routes'
-import config from '@/configs/general'
 
-export function SignIn() {
+export function Verify() {
   const { t } = useTranslation('auth')
 
   return (
@@ -20,25 +19,24 @@ export function SignIn() {
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>
           <CardTitle className='text-3xl font-bold tracking-tight text-foreground'>
-            {t('signIn.title')}
+            {t('verification.title')}
           </CardTitle>
           <CardDescription className='font-medium text-muted-foreground'>
-            {t('signIn.subtitle')}
+            {t('verification.subtitle')}
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <SignInForm />
+          <VerificationForm />
         </CardContent>
 
-        <CardFooter className='flex flex-col space-y-4 border-t pt-6 text-center'>
+        <CardFooter className='flex justify-center border-t pt-6'>
           <p className='text-sm font-medium text-muted-foreground'>
-            {t('signIn.footer.text')}{' '}
             <Link
-              to={config.auth.emailGate ? ROUTES.EMAIL_GATE : ROUTES.SIGN_UP}
+              to={ROUTES.SIGN_IN}
               className='font-bold text-primary transition-all hover:underline'
             >
-              {t('signIn.footer.link')}
+              {t('verification.footer.link')}
             </Link>
           </p>
         </CardFooter>

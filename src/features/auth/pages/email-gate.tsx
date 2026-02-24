@@ -1,18 +1,17 @@
 import { Link } from '@tanstack/react-router'
+import { EmailGateForm } from '@/features/auth/components/email-gate-form'
 import { useTranslation } from 'react-i18next'
-import { SignInForm } from '../components/sign-in-form'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '@/components/ui/card'
 import { ROUTES } from '@/constants/routes'
-import config from '@/configs/general'
 
-export function SignIn() {
+export function EmailGate() {
   const { t } = useTranslation('auth')
 
   return (
@@ -20,25 +19,25 @@ export function SignIn() {
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>
           <CardTitle className='text-3xl font-bold tracking-tight text-foreground'>
-            {t('signIn.title')}
+            {t('emailGate.title')}
           </CardTitle>
           <CardDescription className='font-medium text-muted-foreground'>
-            {t('signIn.subtitle')}
+            {t('emailGate.subtitle')}
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <SignInForm />
+          <EmailGateForm />
         </CardContent>
 
         <CardFooter className='flex flex-col space-y-4 border-t pt-6 text-center'>
           <p className='text-sm font-medium text-muted-foreground'>
-            {t('signIn.footer.text')}{' '}
+            {t('emailGate.footer.text')}{' '}
             <Link
-              to={config.auth.emailGate ? ROUTES.EMAIL_GATE : ROUTES.SIGN_UP}
+              to={ROUTES.SIGN_IN}
               className='font-bold text-primary transition-all hover:underline'
             >
-              {t('signIn.footer.link')}
+              {t('emailGate.footer.link')}
             </Link>
           </p>
         </CardFooter>

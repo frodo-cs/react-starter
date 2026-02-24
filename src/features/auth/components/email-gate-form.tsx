@@ -1,24 +1,29 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate } from '@tanstack/react-router'
 import type { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { emailSchema } from '../schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useForgotPassword } from '../hooks/use-forgot-password'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
+import { ROUTES } from '@/constants/routes'
+import { useEmailGate } from '../hooks/use-email-gate'
 
 type FormData = z.infer<typeof emailSchema>
 
-type Props = {
-  onSuccess?: () => void
-}
-
-export function ForgotPasswordForm({ onSuccess }: Props) {
+/**
+ * "Pre-sign up" form that validates an email against a client database.
+ *
+ * If a client is found, redirects to the registration form with
+ * the email prefilled.
+ */
+export function EmailGateForm() {
   const { t } = useTranslation('auth')
-  const { mutateAsync, isPending } = useForgotPassword()
+  const navigate = useNavigate()
+  const { mutateAsync, isPending } = useEmailGate()
 
   const {
     register,
@@ -30,17 +35,20 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
 
   async function onSubmit(data: FormData) {
     try {
-      const passwordResetPromise = mutateAsync(data)
-      await toast.promise(passwordResetPromise, {
-        loading: t('forgotPassword.toast.loading'),
-        success: t('forgotPassword.toast.success'),
+      const emailGatePromise = mutateAsync(data)
+      toast.promise(emailGatePromise, {
+        loading: t('emailGate.toast.loading'),
+        success: t('emailGate.toast.success'),
         error: (error: unknown) =>
-          t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
+          t('emailGate.toast.error', { error: getErrorMessage(error) }),
       })
-      await passwordResetPromise
-      onSuccess?.()
+      const result = await emailGatePromise
+      navigate({
+        to: ROUTES.SIGN_UP,
+        search: { email: result.user?.email },
+      })
     } catch {
-      // error already handled by toast
+      // error already handled by toast.promise
     }
   }
 
@@ -48,13 +56,11 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
     <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
       <div className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
-          <Label htmlFor='email'>
-            {t('forgotPassword.fields.email.label')}
-          </Label>
+          <Label htmlFor='email'>{t('emailGate.fields.emailGate.label')}</Label>
           <Input
             id='email'
             type='email'
-            placeholder={t('forgotPassword.fields.email.placeholder')}
+            placeholder={t('emailGate.fields.emailGate.placeholder')}
             autoComplete='email'
             {...register('email')}
           />
@@ -72,9 +78,7 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
         className='h-11 w-full font-bold'
         disabled={isPending}
       >
-        {isPending
-          ? t('forgotPassword.submitting')
-          : t('forgotPassword.submit')}
+        {isPending ? t('emailGate.submitting') : t('emailGate.submit')}
       </Button>
     </form>
   )

@@ -2,7 +2,10 @@ import type { IAuthAdapter } from '@/features/auth/adapters/auth-base.adapter'
 import { AuthAdapterMock } from '@/features/auth/adapters/auth-mock.adapter'
 
 const IS_MOCK = import.meta.env.MODE === 'mock'
-const API_BASE_URL = IS_MOCK ? '' : import.meta.env.VITE_API_BASE_URL || ''
+const API_BASE_URL = IS_MOCK
+  ? ''
+  : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (import.meta as any).env.VITE_API_BASE_URL || ''
 
 /**
  * Global Adapter Registry.
@@ -16,19 +19,35 @@ const ADAPTERS = {
   mock: {
     auth: AuthAdapterMock,
   },
+  // Add other modes here (e.g., development, production) mapping to real adapters
+  development: {
+    auth: AuthAdapterMock, // Or a RestAdapter once implemented
+  },
+  production: {
+    auth: AuthAdapterMock,
+  },
+} as const
+
+type AdapterMode = keyof typeof ADAPTERS
+
+/**
+ * Retrieves the adapter configuration for the current environment mode.
+ */
+function getAdapterConfig() {
+  const mode = import.meta.env.MODE as AdapterMode
+  return ADAPTERS[mode] || ADAPTERS.mock
 }
 
-type AdapterVersion = keyof typeof ADAPTERS
-
-function getAdapterVersion() {
-  const version = (import.meta.env.VITE_ENVIRONMENT || 'mock') as AdapterVersion
-  return ADAPTERS[version]
-}
-
+/**
+ * Factory function to create the authentication adapter.
+ */
 function createAuthAdapter(): IAuthAdapter {
-  const adapterVersion = getAdapterVersion()
-  const AdapterClass = adapterVersion.auth
+  const config = getAdapterConfig()
+  const AdapterClass = config.auth
   return new AdapterClass(API_BASE_URL)
 }
 
+/**
+ * Exported singleton instance of the authentication adapter.
+ */
 export const authAdapter = createAuthAdapter()

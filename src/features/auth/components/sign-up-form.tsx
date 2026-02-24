@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { signUpSchema } from '../schemas/auth'
@@ -11,14 +11,21 @@ import { useRegister } from '../hooks/use-register'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import { ROUTES } from '@/constants/routes'
+import config from '@/configs/general'
 
 type FormData = z.infer<typeof signUpSchema>
 
+/**
+ * Form component for user registration.
+ *
+ * Handles account creation, prefilled email from the gate,
+ * and conditional redirection based on verification settings.
+ */
 export function SignUpForm() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
-  const registerMutation = useRegister()
-  const { mutateAsync, isPending } = registerMutation
+  const { email: prefilledEmail } = useSearch({ from: '/(auth)/sign-up' })
+  const { mutateAsync, isPending } = useRegister()
 
   const {
     register,
@@ -26,11 +33,20 @@ export function SignUpForm() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      email: prefilledEmail ?? undefined,
+    },
   })
 
   async function onSubmit(data: FormData) {
     try {
-      const registerPromise = mutateAsync(data)
+      const finalEmail =
+        config.auth.emailGate && prefilledEmail ? prefilledEmail : data.email
+
+      const registerPromise = mutateAsync({
+        ...data,
+        email: finalEmail,
+      })
       await toast.promise(registerPromise, {
         loading: t('signUp.toast.loading'),
         success: t('signUp.toast.success'),
@@ -38,7 +54,14 @@ export function SignUpForm() {
           t('signUp.toast.error', { error: getErrorMessage(error) }),
       })
       await registerPromise
-      navigate({ to: ROUTES.SIGN_IN })
+      if (config.auth.accountVerify) {
+        navigate({
+          to: ROUTES.VERIFICATION,
+          search: { email: data.email },
+        })
+      } else {
+        navigate({ to: ROUTES.SIGN_IN })
+      }
     } catch {
       // error already handled by toast
     }
@@ -57,7 +80,8 @@ export function SignUpForm() {
             {...register('name')}
           />
           {errors.name && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.name.message}
             </span>
           )}
@@ -70,10 +94,12 @@ export function SignUpForm() {
             type='email'
             placeholder={t('signUp.fields.email.placeholder')}
             autoComplete='email'
+            disabled={config.auth.emailGate && !!prefilledEmail}
             {...register('email')}
           />
           {errors.email && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.email.message}
             </span>
           )}
@@ -89,7 +115,8 @@ export function SignUpForm() {
             {...register('password')}
           />
           {errors.password && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.password.message}
             </span>
           )}
@@ -107,7 +134,8 @@ export function SignUpForm() {
             {...register('confirmPassword')}
           />
           {errors.confirmPassword && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.confirmPassword.message}
             </span>
           )}

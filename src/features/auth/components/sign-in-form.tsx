@@ -12,9 +12,16 @@ import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import type { AuthUser } from '../interfaces/auth'
 import { ROUTES } from '@/constants/routes'
+import config from '@/configs/general'
 
 type FormData = z.infer<typeof signInSchema>
 
+/**
+ * Form component for user authentication.
+ *
+ * Handles standard login, unverified account redirections,
+ * and maintains session state upon success.
+ */
 export function SignInForm() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
@@ -36,17 +43,26 @@ export function SignInForm() {
       const loginPromise = mutateAsync(data)
       toast.promise(loginPromise, {
         loading: t('signIn.toast.loading'),
-        success: (response: { user: AuthUser }) =>
-          t('signIn.toast.success', { identifier: response.user.username }),
+        success: (response: { user?: AuthUser }) =>
+          response.user
+            ? t('signIn.toast.success', { identifier: response.user.username })
+            : t('signIn.toast.needsVerification'),
         error: (error: unknown) =>
           t('signIn.toast.error', { error: getErrorMessage(error) }),
       })
-      await loginPromise
+      const loginResult = await loginPromise
+      if (config.auth.accountVerify && !loginResult.verified) {
+        navigate({
+          to: ROUTES.VERIFICATION,
+          search: { email: data.email },
+        })
+        return
+      }
       await router.invalidate()
-      const targetPath = (redirect as string) || ROUTES.HOME
+      const targetPath = redirect ?? ROUTES.HOME
       navigate({ to: targetPath, replace: true })
     } catch {
-      // error already handled by toast
+      // other errors already handled by toast
     }
   }
 
@@ -63,8 +79,8 @@ export function SignInForm() {
             {...register('email')}
           />
           {errors.email && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
-              <span className='mr-1 h-1 w-1 rounded-full bg-destructive'></span>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.email.message}
             </span>
           )}
@@ -90,8 +106,8 @@ export function SignInForm() {
             {...register('password')}
           />
           {errors.password && (
-            <span className='mt-1 flex items-center text-xs font-medium text-destructive'>
-              <span className='mr-1 h-1 w-1 rounded-full bg-destructive'></span>
+            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
+              <span className='h-1 w-1 rounded-full bg-destructive' />
               {errors.password.message}
             </span>
           )}
