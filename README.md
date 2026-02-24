@@ -13,6 +13,8 @@ A modern, high-performance React application starter built with the latest techn
 - **Data Fetching**: [TanStack Query](https://tanstack.com/query)
 - **Internationalization**: [i18next](https://www.i18next.com/) (EN/ES support)
 - **Icons**: [Lucide React](https://lucide.dev/)
+- **Testing**: [Vitest](https://vitest.dev/) & [Testing Library](https://testing-library.com/)
+- **Mocking**: [MSW](https://mswjs.io/)
 
 ## Architecture
 
@@ -92,6 +94,7 @@ Below is a list of scripts you can run using `pnpm <script-name>`:
 | `format:check` | `prettier --check .`   | Checks if the codebase follows the Prettier formatting rules.                              |
 | `knip`         | `knip`                 | Finds unused files, dependencies, and exports to keep the bundle lean.                     |
 | `prepare`      | `husky`                | Automatically sets up Git hooks for local development.                                     |
+| `cz`           | `cz`                   | Launches an interactive prompt to write a conventional commit message.                     |
 
 > **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint via `lint-staged`. Commit messages are also enforced using **commitlint** with the [Conventional Commits](https://www.conventionalcommits.org/) standard. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
 
