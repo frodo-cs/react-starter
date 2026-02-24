@@ -69,7 +69,7 @@ To add a new language:
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/frodo-cs/react-starter.git
 
 # Install dependencies
 pnpm install
