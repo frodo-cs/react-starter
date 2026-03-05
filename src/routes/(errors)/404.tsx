@@ -1,6 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { NotFoundError } from '@/features/errors/not-found-error'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(errors)/404')({
-  component: NotFoundError,
+  component: lazyRouteComponent(() =>
+    import('@/features/errors/not-found-error').then((m) => ({
+      default: m.NotFoundError,
+    }))
+  ),
 })

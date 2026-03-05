@@ -1,6 +1,9 @@
-import { MaintenanceError } from '@/features/errors/maintenance-error'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(errors)/503')({
-  component: MaintenanceError,
+  component: lazyRouteComponent(() =>
+    import('@/features/errors/maintenance-error').then((m) => ({
+      default: m.MaintenanceError,
+    }))
+  ),
 })

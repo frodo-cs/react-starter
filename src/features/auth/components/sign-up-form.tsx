@@ -8,10 +8,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRegister } from '../hooks/use-register'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import { ROUTES } from '@/constants/routes'
 import config from '@/configs/general'
+import { submitWithToast } from '@/lib/toast-promise'
 
 type FormData = z.infer<typeof signUpSchema>
 
@@ -39,32 +39,25 @@ export function SignUpForm() {
   })
 
   async function onSubmit(data: FormData) {
-    try {
-      const finalEmail =
-        config.auth.emailGate && prefilledEmail ? prefilledEmail : data.email
+    const finalEmail =
+      config.auth.emailGate && prefilledEmail ? prefilledEmail : data.email
 
-      const registerPromise = mutateAsync({
-        ...data,
-        email: finalEmail,
-      })
-      await toast.promise(registerPromise, {
+    const result = await submitWithToast(
+      mutateAsync({ ...data, email: finalEmail }),
+      {
         loading: t('signUp.toast.loading'),
         success: t('signUp.toast.success'),
-        error: (error: unknown) =>
+        error: (error) =>
           t('signUp.toast.error', { error: getErrorMessage(error) }),
-      })
-      await registerPromise
-      if (config.auth.accountVerify) {
-        navigate({
-          to: ROUTES.VERIFICATION,
-          search: { email: data.email },
-        })
-      } else {
-        navigate({ to: ROUTES.SIGN_IN })
       }
-    } catch {
-      // error already handled by toast
-    }
+    )
+
+    if (!result) return
+
+    navigate({
+      to: config.auth.accountVerify ? ROUTES.VERIFICATION : ROUTES.SIGN_IN,
+      ...(config.auth.accountVerify && { search: { email: data.email } }),
+    })
   }
 
   return (

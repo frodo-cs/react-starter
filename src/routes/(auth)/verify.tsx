@@ -1,12 +1,13 @@
 import { z } from 'zod'
-import { createFileRoute } from '@tanstack/react-router'
-import { Verify } from '@/features/auth/pages/verify'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 const searchSchema = z.object({
   email: z.email().catch(''),
 })
 
 export const Route = createFileRoute('/(auth)/verify')({
-  component: Verify,
+  component: lazyRouteComponent(() =>
+    import('@/features/auth/pages/verify').then((m) => ({ default: m.Verify }))
+  ),
   validateSearch: searchSchema,
 })

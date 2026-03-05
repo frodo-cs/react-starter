@@ -1,6 +1,9 @@
 import { z } from 'zod'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { SignIn } from '@/features/auth/pages/sign-in'
+import {
+  createFileRoute,
+  redirect,
+  lazyRouteComponent,
+} from '@tanstack/react-router'
 import { ROUTES } from '@/constants/routes'
 
 const searchSchema = z.object({
@@ -9,14 +12,12 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute('/(auth)/sign-in')({
   beforeLoad: ({ context, search }) => {
-    const accessToken = context.auth?.accessToken
-
-    if (accessToken) {
-      throw redirect({
-        to: search.redirect || ROUTES.HOME,
-      })
+    if (context.auth?.accessToken) {
+      throw redirect({ to: search.redirect || ROUTES.HOME })
     }
   },
-  component: SignIn,
+  component: lazyRouteComponent(() =>
+    import('@/features/auth/pages/sign-in').then((m) => ({ default: m.SignIn }))
+  ),
   validateSearch: searchSchema,
 })

@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useLogin } from '../hooks/use-login'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import type { AuthUser } from '../interfaces/auth'
 import { ROUTES } from '@/constants/routes'
 import config from '@/configs/general'
+import { submitWithToast } from '@/lib/toast-promise'
 
 type FormData = z.infer<typeof signInSchema>
 
@@ -39,31 +39,25 @@ export function SignInForm() {
   })
 
   async function onSubmit(data: FormData) {
-    try {
-      const loginPromise = mutateAsync(data)
-      toast.promise(loginPromise, {
-        loading: t('signIn.toast.loading'),
-        success: (response: { user?: AuthUser }) =>
-          response.user
-            ? t('signIn.toast.success', { identifier: response.user.username })
-            : t('signIn.toast.needsVerification'),
-        error: (error: unknown) =>
-          t('signIn.toast.error', { error: getErrorMessage(error) }),
-      })
-      const loginResult = await loginPromise
-      if (config.auth.accountVerify && !loginResult.verified) {
-        navigate({
-          to: ROUTES.VERIFICATION,
-          search: { email: data.email },
-        })
-        return
-      }
-      await router.invalidate()
-      const targetPath = redirect ?? ROUTES.HOME
-      navigate({ to: targetPath, replace: true })
-    } catch {
-      // other errors already handled by toast
+    const loginResult = await submitWithToast(mutateAsync(data), {
+      loading: t('signIn.toast.loading'),
+      success: (response: { user?: AuthUser }) =>
+        response.user
+          ? t('signIn.toast.success', { identifier: response.user.username })
+          : t('signIn.toast.needsVerification'),
+      error: (error) =>
+        t('signIn.toast.error', { error: getErrorMessage(error) }),
+    })
+
+    if (!loginResult) return
+
+    if (config.auth.accountVerify && !loginResult.verified) {
+      navigate({ to: ROUTES.VERIFICATION, search: { email: data.email } })
+      return
     }
+
+    await router.invalidate()
+    navigate({ to: redirect ?? ROUTES.HOME, replace: true })
   }
 
   return (

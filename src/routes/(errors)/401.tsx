@@ -1,6 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { UnauthorizedError } from '@/features/errors/unauthorized-error'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(errors)/401')({
-  component: UnauthorizedError,
+  component: lazyRouteComponent(() =>
+    import('@/features/errors/unauthorized-error').then((m) => ({
+      default: m.UnauthorizedError,
+    }))
+  ),
 })

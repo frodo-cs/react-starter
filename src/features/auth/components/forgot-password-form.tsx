@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useForgotPassword } from '../hooks/use-forgot-password'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
+import { submitWithToast } from '@/lib/toast-promise'
 
 type FormData = z.infer<typeof emailSchema>
 
@@ -29,19 +29,16 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
   })
 
   async function onSubmit(data: FormData) {
-    try {
-      const passwordResetPromise = mutateAsync(data)
-      await toast.promise(passwordResetPromise, {
-        loading: t('forgotPassword.toast.loading'),
-        success: t('forgotPassword.toast.success'),
-        error: (error: unknown) =>
-          t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
-      })
-      await passwordResetPromise
-      onSuccess?.()
-    } catch {
-      // error already handled by toast
-    }
+    const result = await submitWithToast(mutateAsync(data), {
+      loading: t('forgotPassword.toast.loading'),
+      success: t('forgotPassword.toast.success'),
+      error: (error) =>
+        t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
+    })
+
+    if (!result) return
+
+    onSuccess?.()
   }
 
   return (

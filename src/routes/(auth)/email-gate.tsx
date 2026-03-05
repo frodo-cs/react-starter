@@ -1,6 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { EmailGate } from '@/features/auth/pages/email-gate'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(auth)/email-gate')({
-  component: EmailGate,
+  component: lazyRouteComponent(() =>
+    import('@/features/auth/pages/email-gate').then((m) => ({
+      default: m.EmailGate,
+    }))
+  ),
 })

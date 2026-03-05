@@ -7,11 +7,11 @@ import { verificationSchema } from '../schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import { ROUTES } from '@/constants/routes'
 import { useVerification } from '../hooks/use-verification'
 import { useResendCode } from '../hooks/use-resend-code'
+import { submitWithToast } from '@/lib/toast-promise'
 
 type FormData = z.infer<typeof verificationSchema>
 
@@ -36,34 +36,28 @@ export function VerificationForm() {
   })
 
   async function onSubmit(data: FormData) {
-    try {
-      const verificationPromise = mutateAsync({ email, code: data.code })
-      toast.promise(verificationPromise, {
+    const result = await submitWithToast(
+      mutateAsync({ email, code: data.code }),
+      {
         loading: t('verification.toast.loading'),
         success: t('verification.toast.success'),
-        error: (error: unknown) =>
+        error: (error) =>
           t('verification.toast.error', { error: getErrorMessage(error) }),
-      })
-      await verificationPromise
-      navigate({ to: ROUTES.SIGN_IN })
-    } catch {
-      // error already handled by toast.promise
-    }
+      }
+    )
+
+    if (!result) return
+
+    navigate({ to: ROUTES.SIGN_IN })
   }
 
   async function onResend() {
-    try {
-      const resendCodePromise = resendCode({ email })
-      await toast.promise(resendCodePromise, {
-        loading: t('verification.resend.loading'),
-        success: t('verification.resend.success'),
-        error: (error: unknown) =>
-          t('verification.resend.error', { error: getErrorMessage(error) }),
-      })
-      await resendCodePromise
-    } catch {
-      // error already handled by toast
-    }
+    await submitWithToast(resendCode({ email }), {
+      loading: t('verification.resend.loading'),
+      success: t('verification.resend.success'),
+      error: (error) =>
+        t('verification.resend.error', { error: getErrorMessage(error) }),
+    })
   }
 
   return (

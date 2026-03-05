@@ -7,10 +7,10 @@ import { emailSchema } from '../schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/error-message'
 import { ROUTES } from '@/constants/routes'
 import { useEmailGate } from '../hooks/use-email-gate'
+import { submitWithToast } from '@/lib/toast-promise'
 
 type FormData = z.infer<typeof emailSchema>
 
@@ -34,22 +34,16 @@ export function EmailGateForm() {
   })
 
   async function onSubmit(data: FormData) {
-    try {
-      const emailGatePromise = mutateAsync(data)
-      toast.promise(emailGatePromise, {
-        loading: t('emailGate.toast.loading'),
-        success: t('emailGate.toast.success'),
-        error: (error: unknown) =>
-          t('emailGate.toast.error', { error: getErrorMessage(error) }),
-      })
-      const result = await emailGatePromise
-      navigate({
-        to: ROUTES.SIGN_UP,
-        search: { email: result.user?.email },
-      })
-    } catch {
-      // error already handled by toast.promise
-    }
+    const result = await submitWithToast(mutateAsync(data), {
+      loading: t('emailGate.toast.loading'),
+      success: t('emailGate.toast.success'),
+      error: (error) =>
+        t('emailGate.toast.error', { error: getErrorMessage(error) }),
+    })
+
+    if (!result) return
+
+    navigate({ to: ROUTES.SIGN_UP, search: { email: result.user?.email } })
   }
 
   return (

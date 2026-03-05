@@ -1,6 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { ForbiddenError } from '@/features/errors/forbidden-error'
+import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(errors)/403')({
-  component: ForbiddenError,
+  component: lazyRouteComponent(() =>
+    import('@/features/errors/forbidden-error').then((m) => ({
+      default: m.ForbiddenError,
+    }))
+  ),
 })
