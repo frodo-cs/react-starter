@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
-import appConfig from '@/configs/general'
 
 export const apiClient = axios.create({
   timeout: 10000,
@@ -13,7 +12,7 @@ apiClient.interceptors.request.use(
   (config) => {
     const { accessToken } = useAuthStore.getState()
     if (accessToken) {
-      config.headers.Authorization = `${appConfig.tokenScheme} ${accessToken}`
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
     return config
   },

@@ -2,17 +2,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { emailSchema } from '../schemas/auth'
+import { identifierSchema } from '../schemas/auth'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { InputField } from '@/components/shared/input-field'
 import { useForgotPassword } from '../hooks/use-forgot-password'
 import { getErrorMessage } from '@/lib/error-message'
 import { submitWithToast } from '@/lib/toast-promise'
 
-type FormData = z.infer<typeof emailSchema>
+type FormData = z.infer<typeof identifierSchema>
 
-type Props = {
+interface Props {
   onSuccess?: () => void
 }
 
@@ -25,7 +24,7 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(emailSchema),
+    resolver: zodResolver(identifierSchema),
   })
 
   async function onSubmit(data: FormData) {
@@ -44,24 +43,15 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
   return (
     <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
       <div className='flex flex-col gap-4'>
-        <div className='flex flex-col gap-2'>
-          <Label htmlFor='email'>
-            {t('forgotPassword.fields.email.label')}
-          </Label>
-          <Input
-            id='email'
-            type='email'
-            placeholder={t('forgotPassword.fields.email.placeholder')}
-            autoComplete='email'
-            {...register('email')}
-          />
-          {errors.email && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
-              <span className='h-1 w-1 rounded-full bg-destructive' />
-              {errors.email.message}
-            </span>
-          )}
-        </div>
+        <InputField
+          id='identifier'
+          label={t('forgotPassword.fields.identifier.label')}
+          type='text'
+          placeholder={t('forgotPassword.fields.identifier.placeholder')}
+          autoComplete='username'
+          error={errors.identifier}
+          {...register('identifier')}
+        />
       </div>
 
       <Button

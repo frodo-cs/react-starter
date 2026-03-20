@@ -16,11 +16,9 @@ import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors404RouteImport } from './routes/(errors)/404'
 import { Route as errors403RouteImport } from './routes/(errors)/403'
 import { Route as errors401RouteImport } from './routes/(errors)/401'
-import { Route as authVerifyRouteImport } from './routes/(auth)/verify'
 import { Route as authSignUpRouteImport } from './routes/(auth)/sign-up'
 import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
-import { Route as authEmailGateRouteImport } from './routes/(auth)/email-gate'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -57,11 +55,6 @@ const errors401Route = errors401RouteImport.update({
   path: '/401',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authVerifyRoute = authVerifyRouteImport.update({
-  id: '/(auth)/verify',
-  path: '/verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authSignUpRoute = authSignUpRouteImport.update({
   id: '/(auth)/sign-up',
   path: '/sign-up',
@@ -77,11 +70,6 @@ const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authEmailGateRoute = authEmailGateRouteImport.update({
-  id: '/(auth)/email-gate',
-  path: '/email-gate',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
@@ -91,11 +79,9 @@ const AuthenticatedErrorsErrorRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
-  '/email-gate': typeof authEmailGateRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
-  '/verify': typeof authVerifyRoute
   '/401': typeof errors401Route
   '/403': typeof errors403Route
   '/404': typeof errors404Route
@@ -104,11 +90,9 @@ export interface FileRoutesByFullPath {
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
 }
 export interface FileRoutesByTo {
-  '/email-gate': typeof authEmailGateRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
-  '/verify': typeof authVerifyRoute
   '/401': typeof errors401Route
   '/403': typeof errors403Route
   '/404': typeof errors404Route
@@ -120,11 +104,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/(auth)/email-gate': typeof authEmailGateRoute
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/sign-in': typeof authSignInRoute
   '/(auth)/sign-up': typeof authSignUpRoute
-  '/(auth)/verify': typeof authVerifyRoute
   '/(errors)/401': typeof errors401Route
   '/(errors)/403': typeof errors403Route
   '/(errors)/404': typeof errors404Route
@@ -137,11 +119,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/email-gate'
     | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
-    | '/verify'
     | '/401'
     | '/403'
     | '/404'
@@ -150,11 +130,9 @@ export interface FileRouteTypes {
     | '/errors/$error'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/email-gate'
     | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
-    | '/verify'
     | '/401'
     | '/403'
     | '/404'
@@ -165,11 +143,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authenticated'
-    | '/(auth)/email-gate'
     | '/(auth)/forgot-password'
     | '/(auth)/sign-in'
     | '/(auth)/sign-up'
-    | '/(auth)/verify'
     | '/(errors)/401'
     | '/(errors)/403'
     | '/(errors)/404'
@@ -181,11 +157,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  authEmailGateRoute: typeof authEmailGateRoute
   authForgotPasswordRoute: typeof authForgotPasswordRoute
   authSignInRoute: typeof authSignInRoute
   authSignUpRoute: typeof authSignUpRoute
-  authVerifyRoute: typeof authVerifyRoute
   errors401Route: typeof errors401Route
   errors403Route: typeof errors403Route
   errors404Route: typeof errors404Route
@@ -244,13 +218,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof errors401RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/verify': {
-      id: '/(auth)/verify'
-      path: '/verify'
-      fullPath: '/verify'
-      preLoaderRoute: typeof authVerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)/sign-up': {
       id: '/(auth)/sign-up'
       path: '/sign-up'
@@ -270,13 +237,6 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof authForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/email-gate': {
-      id: '/(auth)/email-gate'
-      path: '/email-gate'
-      fullPath: '/email-gate'
-      preLoaderRoute: typeof authEmailGateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/errors/$error': {
@@ -304,11 +264,9 @@ const AuthenticatedRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  authEmailGateRoute: authEmailGateRoute,
   authForgotPasswordRoute: authForgotPasswordRoute,
   authSignInRoute: authSignInRoute,
   authSignUpRoute: authSignUpRoute,
-  authVerifyRoute: authVerifyRoute,
   errors401Route: errors401Route,
   errors403Route: errors403Route,
   errors404Route: errors404Route,

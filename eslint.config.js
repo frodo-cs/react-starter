@@ -54,6 +54,10 @@ export default defineConfig(
       ],
       // Prevent duplicate imports from the same module
       'no-duplicate-imports': 'error',
+      // Enforce interfaces over types
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      // Enforce function declarations
+      'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
     },
   }
 )

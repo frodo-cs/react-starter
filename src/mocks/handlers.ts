@@ -3,30 +3,16 @@ import { http, HttpResponse } from 'msw'
 import { faker } from '@faker-js/faker'
 import { ENDPOINTS } from '@/constants/endpoints'
 
-faker.seed(67890)
-
-const clients: { name: string; email: string }[] = [
-  { name: 'Alice Client', email: 'alice@mail.com' },
-  { name: 'Bob Client', email: 'bob@mail.com' },
-]
-
-const registeredUsers: {
-  name: string
-  email: string
-  password: string
-  verified: boolean
-}[] = [
+const registeredUsers = [
   {
     name: 'Admin',
-    email: 'admin@mail.com',
+    username: 'admin',
     password: 'password',
-    verified: true,
   },
   {
     name: 'Test',
-    email: 'test@mail.com',
+    username: 'test',
     password: 'password',
-    verified: false,
   },
 ]
 
@@ -38,24 +24,18 @@ export const handlers = [
     await sleep(1000)
 
     const registeredUser = registeredUsers.find(
-      (u) => u.email === body.identifier && u.password === body.password
+      (u) => u.username === body.identifier && u.password === body.password
     )
 
     if (registeredUser) {
-      if (
-        import.meta.env.VITE_ACCOUNT_VERIFY === 'true' &&
-        !registeredUser.verified
-      ) {
-        return HttpResponse.json({ verified: false }, { status: 200 })
-      }
-
       return HttpResponse.json(
         {
           verified: true,
           accessToken: faker.string.alphanumeric(32),
           user: {
-            username: registeredUser.name,
-            email: registeredUser.email,
+            id: faker.string.uuid(),
+            name: registeredUser.name,
+            username: registeredUser.username,
           },
         },
         { status: 200 }
@@ -68,63 +48,34 @@ export const handlers = [
     )
   }),
 
-  // ─── Email Gate ───────────────────────────────────────────────────────────────
-  http.post(`/${ENDPOINTS.EMAIL_GATE}`, async ({ request }) => {
-    const body = (await request.json()) as any
-
-    await sleep(800)
-
-    const existingClient = clients.find((c) => c.email === body.email)
-
-    if (existingClient) {
-      return HttpResponse.json(
-        {
-          user: {
-            id: faker.string.uuid(),
-            name: existingClient.name,
-            email: existingClient.email,
-          },
-        },
-        { status: 200 }
-      )
-    }
-
-    return HttpResponse.json({ user: null }, { status: 200 })
-  }),
-
   // ─── Registration ─────────────────────────────────────────────────────────────
   http.post(`/${ENDPOINTS.REGISTER}`, async ({ request }) => {
     const body = (await request.json()) as any
 
     await sleep(1000)
 
-    const existingUser = registeredUsers.find((u) => u.email === body.email)
+    const existingUser = registeredUsers.find(
+      (u) => u.username === body.identifier
+    )
     if (existingUser) {
-      return HttpResponse.json('Email already in use', { status: 409 })
+      return HttpResponse.json('Username already in use', { status: 409 })
     }
 
-    if (import.meta.env.VITE_EMAIL_GATE === 'true') {
-      const isAuthorized = clients.some((c) => c.email === body.email)
-      if (!isAuthorized) {
-        return HttpResponse.json('Email not authorized by gate', {
-          status: 403,
-        })
-      }
-    }
-
-    registeredUsers.push({
+    const newUser = {
       name: body.name,
-      email: body.email,
+      username: body.identifier,
       password: body.password,
-      verified: import.meta.env.VITE_ACCOUNT_VERIFY !== 'true',
-    })
+    }
+
+    registeredUsers.push(newUser)
 
     return HttpResponse.json(
       {
         accessToken: faker.string.alphanumeric(32),
         user: {
-          username: body.name,
-          email: body.email,
+          id: faker.string.uuid(),
+          name: newUser.name,
+          username: newUser.username,
         },
       },
       { status: 201 }
@@ -137,48 +88,17 @@ export const handlers = [
 
     await sleep(1000)
 
-    const userExists = registeredUsers.some((u) => u.email === body.email)
+    const userExists = registeredUsers.some(
+      (u) => u.username === body.identifier
+    )
 
     if (userExists) {
-      console.info(`[MSW] Password reset link sent to ${body.email}`)
+      console.info(`[MSW] Password reset link sent to ${body.identifier}`)
     }
 
     return HttpResponse.json(
-      { message: 'If that email exists, a reset link has been sent.' },
+      { message: 'If that identifier exists, a reset link has been sent.' },
       { status: 200 }
     )
-  }),
-
-  // ─── Account Verification ────────────────────────────────────────────────────
-  http.post(`/${ENDPOINTS.VERIFY}`, async ({ request }) => {
-    const body = (await request.json()) as any
-    await sleep(800)
-
-    const user = registeredUsers.find((u) => u.email === body.email)
-
-    if (!user) {
-      return HttpResponse.json({ verified: false }, { status: 200 })
-    }
-
-    if (body.code === '123456') {
-      user.verified = true
-      return HttpResponse.json({ verified: true }, { status: 200 })
-    }
-
-    return HttpResponse.json({ verified: false }, { status: 200 })
-  }),
-
-  // ─── Resend Verification Code ────────────────────────────────────────────────
-  http.post(`/${ENDPOINTS.RESEND_CODE}`, async ({ request }) => {
-    const body = (await request.json()) as any
-    await sleep(800)
-
-    const user = registeredUsers.find((u) => u.email === body.email)
-
-    if (user) {
-      console.info(`[MSW] Verification code resent to ${body.email}`)
-    }
-
-    return HttpResponse.json({ message: 'Code resent' }, { status: 200 })
   }),
 ]

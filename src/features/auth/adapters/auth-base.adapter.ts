@@ -1,23 +1,14 @@
 import type {
   Credentials,
   SignUpPayload,
-  EmailPayload,
-  VerifyPayload,
+  IdentifierPayload,
 } from '@/features/auth/interfaces/api'
-import type { AuthUser, UserCheck } from '@/features/auth/interfaces/auth'
+import type { AuthUser } from '@/features/auth/interfaces/auth'
 
 export interface LoginResponse {
   verified?: boolean
   token?: string
   user?: AuthUser
-}
-
-export interface EmailGateResponse {
-  user: UserCheck | null
-}
-
-export interface VerifyResponse {
-  verified: boolean
 }
 
 /**
@@ -45,29 +36,12 @@ export interface IAuthAdapter {
   login(credentials: Credentials): Promise<LoginResponse>
 
   /**
-   * Registers a new user. The user will need to verify their email
-   * before being able to authenticate.
+   * Registers a new user.
    */
   register(payload: SignUpPayload): Promise<void>
 
   /**
    * Sends a password reset email to the provided address.
    */
-  forgotPassword(payload: EmailPayload): Promise<void>
-
-  /**
-   * Validates the user's email against our records.
-   */
-  emailGate(payload: EmailPayload): Promise<EmailGateResponse>
-
-  /**
-   * Verifies the user's account using the code sent to their email.
-   * Returns whether verification succeeded.
-   */
-  verify(payload: VerifyPayload): Promise<VerifyResponse>
-
-  /**
-   * Resends the verification code to the user's email.
-   */
-  resendCode(payload: EmailPayload): Promise<void>
+  forgotPassword(payload: IdentifierPayload): Promise<void>
 }

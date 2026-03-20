@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/constants/routes'
 
-type SidebarProps = {
+interface SidebarProps {
   onItemClick?: () => void
 }
 

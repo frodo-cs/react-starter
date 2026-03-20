@@ -1,12 +1,9 @@
 {
   "general": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "actions": "Actions",
-    "loading": "Loading...",
-    "noResults": "No results found",
+    "networkError": "Network error. Please check your connection.",
+    "notFound": "Resource not found",
+    "forbidden": "Access denied",
+    "serverError": "Server error. Please try again later.",
     "unexpectedError": "An unexpected error occurred"
   },
   "navigation": {

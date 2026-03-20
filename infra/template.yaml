@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template for React Starter"
+
+Parameters:
+  AppName:
+    Type: String
+    Default: web-app
+    Description: Name of the application.
+  Environment:
+    Type: String
+    Default: development
+    AllowedValues:
+      - development
+      - staging
+      - production
+    Description: Environment name for the deployment.
+  GitHubOrg:
+    Type: String
+    Description: GitHub organization or username.
+  GitHubRepo:
+    Type: String
+    Description: GitHub repository name.
+  FunctionCode:
+    Type: String
+    Description: Source code for the CloudFront Viewer Request function.
+
+Resources:
+  #############################################
+  # GitHub Actions Role
+  #############################################
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Environment}-${AppName}-GitHubActionsRole"
+      Tags:
+        - Key: AppName
+          Value: !Ref AppName
+        - Key: Environment
+          Value: !Ref Environment
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOrg}/${GitHubRepo}:*"
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+      Policies:
+        - PolicyName: GitHubActionsDeployPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${AppBucket}"
+                  - !Sub "arn:aws:s3:::${AppBucket}/*"
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                  - cloudfront:GetInvalidation
+                  - cloudfront:ListInvalidations
+                Resource: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${AppDistribution}"
+
+  #############################################
+  # S3 Bucket
+  #############################################
+  AppBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Environment}-${AppName}-bucket"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: AppName
+          Value: !Ref AppName
+        - Key: Environment
+          Value: !Ref Environment
+
+  AppBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AppBucket
+      PolicyDocument:
+        Version: "2008-10-17"
+        Id: PolicyForCloudFrontPrivateContent
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${Environment}-${AppName}-bucket/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${AppDistribution}"
+
+  #############################################
+  # CloudFront
+  #############################################
+  CloudFrontFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "${Environment}-${AppName}-RedirectOriginIndex"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: "Redirects empty and directory requests to /index.html"
+        Runtime: cloudfront-js-1.0
+      FunctionCode: !Ref FunctionCode
+
+  AppOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${Environment}-${AppName}-OAC"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  AppDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub "${Environment}-${AppName}-distribution"
+        Enabled: true
+        HttpVersion: http2
+        DefaultRootObject: index.html
+        Origins:
+          - DomainName: !GetAtt AppBucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+            OriginAccessControlId: !GetAtt AppOriginAccessControl.Id
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6"
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt CloudFrontFunction.FunctionARN
+        CacheBehaviors:
+          - PathPattern: /index.html
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+            CachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6"
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt CloudFrontFunction.FunctionARN
+      Tags:
+        - Key: AppName
+          Value: !Ref AppName
+        - Key: Environment
+          Value: !Ref Environment
+
+Outputs:
+  DistributionId:
+    Description: CloudFront Distribution ID
+    Value: !Ref AppDistribution
+  CloudFrontURL:
+    Description: CloudFront Distribution Domain Name
+    Value: !GetAtt AppDistribution.DomainName
+  GitHubRoleArn:
+    Description: GitHub Actions Execution Role ARN
+    Value: !GetAtt GitHubActionsRole.Arn
+  S3BucketName:
+    Description: S3 Bucket Name
+    Value: !Ref AppBucket

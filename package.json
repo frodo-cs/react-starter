@@ -8,6 +8,8 @@
     "mock": "vite --mode mock",
     "test": "vitest",
     "build": "tsc -b && vite build",
+    "build:mock": "tsc -b && vite build --mode mock",
+    "visualize": "npx vite-bundle-visualizer",
     "lint": "eslint .",
     "preview": "vite preview",
     "format:check": "prettier --check .",
@@ -81,8 +83,8 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [
-      "pnpm lint",
-      "pnpm format:check"
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

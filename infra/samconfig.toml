@@ -1,0 +1,25 @@
+version = 0.1
+
+[development]
+[development.deploy]
+[development.deploy.parameters]
+stack_name = "react-starter-development"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM"
+tags = "Environment=development AppName=react-starter"
+
+[staging]
+[staging.deploy]
+[staging.deploy.parameters]
+stack_name = "react-starter-staging"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM"
+tags = "Environment=staging AppName=react-starter"
+
+[production]
+[production.deploy]
+[production.deploy.parameters]
+stack_name = "react-starter-production"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM"
+tags = "Environment=production AppName=react-starter"

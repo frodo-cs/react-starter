@@ -8,7 +8,8 @@ export async function submitWithToast<T>(
     success: string | ((result: T) => string)
     error: string | ((error: unknown) => string)
   },
-  onSuccess?: (result: T) => void
+  onSuccess?: (result: T) => void,
+  onError?: (error: unknown) => void
 ): Promise<T | undefined> {
   toast.promise(promise, {
     loading: messages.loading,
@@ -23,7 +24,7 @@ export async function submitWithToast<T>(
     const result = await promise
     onSuccess?.(result)
     return result
-  } catch {
-    // error handled by toast.promise
+  } catch (error) {
+    onError?.(error)
   }
 }

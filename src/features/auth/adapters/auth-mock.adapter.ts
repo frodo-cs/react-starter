@@ -1,15 +1,12 @@
 import type {
   Credentials,
   SignUpPayload,
-  EmailPayload,
-  VerifyPayload,
+  IdentifierPayload,
 } from '@/features/auth/interfaces/api'
 import { apiClient } from '@/lib/api/axios-instance'
 import {
-  type EmailGateResponse,
   type IAuthAdapter,
   type LoginResponse,
-  type VerifyResponse,
   AUTH_ERRORS,
 } from './auth-base.adapter'
 import { ENDPOINTS } from '@/constants/endpoints'
@@ -18,17 +15,10 @@ interface LoginResponseMockDTO {
   verified: boolean
   accessToken?: string
   user?: {
-    username: string
-    email: string
-  }
-}
-
-interface EmailGateResponseMockDTO {
-  user: {
     id: string
     name: string
     email: string
-  } | null
+  }
 }
 
 export class AuthAdapterMock implements IAuthAdapter {
@@ -43,20 +33,11 @@ export class AuthAdapterMock implements IAuthAdapter {
     return {
       verified: true,
       user: {
-        username: dto.user!.username,
+        id: dto.user!.id,
+        name: dto.user!.name,
         email: dto.user!.email,
       },
       token: dto.accessToken!,
-    }
-  }
-
-  private transformEmailGate(dto: EmailGateResponseMockDTO): EmailGateResponse {
-    if (!dto.user) return { user: null }
-    return {
-      user: {
-        id: dto.user.id,
-        email: dto.user.email,
-      },
     }
   }
 
@@ -64,7 +45,7 @@ export class AuthAdapterMock implements IAuthAdapter {
     const response = await apiClient.post<LoginResponseMockDTO>(
       `${this.baseUrl}/${ENDPOINTS.LOGIN}`,
       {
-        identifier: credentials.email,
+        identifier: credentials.identifier,
         password: credentials.password,
       }
     )
@@ -76,7 +57,7 @@ export class AuthAdapterMock implements IAuthAdapter {
     try {
       await apiClient.post(`${this.baseUrl}/${ENDPOINTS.REGISTER}`, {
         name: payload.name,
-        email: payload.email,
+        identifier: payload.identifier,
         password: payload.password,
       })
     } catch (error) {
@@ -90,47 +71,9 @@ export class AuthAdapterMock implements IAuthAdapter {
     }
   }
 
-  async forgotPassword(payload: EmailPayload): Promise<void> {
+  async forgotPassword(payload: IdentifierPayload): Promise<void> {
     await apiClient.post(`${this.baseUrl}/${ENDPOINTS.FORGOT_PASSWORD}`, {
-      email: payload.email,
-    })
-  }
-
-  async emailGate(payload: EmailPayload): Promise<EmailGateResponse> {
-    const response = await apiClient.post<EmailGateResponseMockDTO>(
-      `${this.baseUrl}/${ENDPOINTS.EMAIL_GATE}`,
-      {
-        email: payload.email,
-      }
-    )
-
-    const result = this.transformEmailGate(response.data)
-    if (!result.user) {
-      throw new Error(AUTH_ERRORS.USER_NOT_FOUND)
-    }
-
-    return result
-  }
-
-  async verify(payload: VerifyPayload): Promise<VerifyResponse> {
-    const response = await apiClient.post<VerifyResponse>(
-      `${this.baseUrl}/${ENDPOINTS.VERIFY}`,
-      {
-        email: payload.email,
-        code: payload.code,
-      }
-    )
-
-    if (response.data.verified === false) {
-      throw new Error(AUTH_ERRORS.INVALID_CODE)
-    }
-
-    return response.data
-  }
-
-  async resendCode(payload: EmailPayload): Promise<void> {
-    await apiClient.post(`${this.baseUrl}/${ENDPOINTS.RESEND_CODE}`, {
-      email: payload.email,
+      identifier: payload.identifier,
     })
   }
 }

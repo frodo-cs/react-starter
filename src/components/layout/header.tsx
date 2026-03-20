@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { LogOut, Menu } from 'lucide-react'
 import { ROUTES } from '@/constants/routes'
 
-type HeaderProps = {
+interface HeaderProps {
   onMenuClick?: () => void
 }
 
@@ -19,7 +19,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-white'>
-      <div className='flex h-16 items-center justify-between px-6'>
+      <div className='mx-auto flex h-16 w-full max-w-360 items-center justify-between px-4 sm:px-6 lg:px-12'>
         <div className='flex items-center gap-4'>
           <Button
             variant='ghost'

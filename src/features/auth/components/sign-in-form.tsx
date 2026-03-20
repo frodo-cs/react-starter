@@ -4,23 +4,23 @@ import { useNavigate, useSearch, useRouter, Link } from '@tanstack/react-router'
 import type { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { signInSchema } from '../schemas/auth'
+import { useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { InputField } from '@/components/shared/input-field'
 import { useLogin } from '../hooks/use-login'
 import { getErrorMessage } from '@/lib/error-message'
-import type { AuthUser } from '../interfaces/auth'
+import type { LoginResponse } from '../adapters/auth-base.adapter'
 import { ROUTES } from '@/constants/routes'
-import config from '@/configs/general'
 import { submitWithToast } from '@/lib/toast-promise'
+import { Label } from '@/components/ui/label'
 
 type FormData = z.infer<typeof signInSchema>
 
 /**
  * Form component for user authentication.
  *
- * Handles standard login, unverified account redirections,
- * and maintains session state upon success.
+ * Handles standard login and maintains session state upon success.
  */
 export function SignInForm() {
   const { t } = useTranslation('auth')
@@ -29,6 +29,7 @@ export function SignInForm() {
   const { redirect } = useSearch({ from: '/(auth)/sign-in' })
   const loginMutation = useLogin()
   const { mutateAsync, isPending } = loginMutation
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
@@ -41,20 +42,15 @@ export function SignInForm() {
   async function onSubmit(data: FormData) {
     const loginResult = await submitWithToast(mutateAsync(data), {
       loading: t('signIn.toast.loading'),
-      success: (response: { user?: AuthUser }) =>
+      success: (response: LoginResponse) =>
         response.user
-          ? t('signIn.toast.success', { identifier: response.user.username })
-          : t('signIn.toast.needsVerification'),
+          ? t('signIn.toast.success', { identifier: response.user.name })
+          : t('signIn.toast.loading'),
       error: (error) =>
         t('signIn.toast.error', { error: getErrorMessage(error) }),
     })
 
     if (!loginResult) return
-
-    if (config.auth.accountVerify && !loginResult.verified) {
-      navigate({ to: ROUTES.VERIFICATION, search: { email: data.email } })
-      return
-    }
 
     await router.invalidate()
     navigate({ to: redirect ?? ROUTES.HOME, replace: true })
@@ -63,22 +59,15 @@ export function SignInForm() {
   return (
     <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
       <div className='flex flex-col gap-4'>
-        <div className='flex flex-col gap-2'>
-          <Label htmlFor='email'>{t('signIn.fields.email.label')}</Label>
-          <Input
-            id='email'
-            type='email'
-            placeholder={t('signIn.fields.email.placeholder')}
-            autoComplete='email'
-            {...register('email')}
-          />
-          {errors.email && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
-              <span className='h-1 w-1 rounded-full bg-destructive' />
-              {errors.email.message}
-            </span>
-          )}
-        </div>
+        <InputField
+          id='identifier'
+          label={t('signIn.fields.identifier.label')}
+          type='text'
+          placeholder={t('signIn.fields.identifier.placeholder')}
+          autoComplete='username'
+          error={errors.identifier}
+          {...register('identifier')}
+        />
 
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
@@ -92,19 +81,24 @@ export function SignInForm() {
               {t('signIn.fields.password.forgotPassword')}
             </Link>
           </div>
-          <Input
+          <InputField
             id='password'
-            type='password'
+            type={showPassword ? 'text' : 'password'}
             placeholder={t('signIn.fields.password.placeholder')}
             autoComplete='current-password'
+            error={errors.password}
             {...register('password')}
+            suffix={
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                className='text-muted-foreground transition-colors hover:text-foreground'
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            }
           />
-          {errors.password && (
-            <span className='mt-1 flex items-center gap-1 text-xs font-medium text-destructive'>
-              <span className='h-1 w-1 rounded-full bg-destructive' />
-              {errors.password.message}
-            </span>
-          )}
         </div>
       </div>
 

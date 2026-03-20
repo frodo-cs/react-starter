@@ -52,7 +52,7 @@ This starter uses tools that provide CLI generation out of the box:
 
 ## Localization
 
-Full support for English and Spanish is built-in. Translations are managed in `src/locales/` and configured in `src/config/i18n.ts`.
+Full support for English and Spanish is built-in. Translations are managed in `src/locales/` and configured in `src/config/i18n.ts`. All error messages, labels, and placeholders are localized.
 
 To add a new language:
 
@@ -83,23 +83,19 @@ pnpm dev
 
 Below is a list of scripts you can run using `pnpm <script-name>`:
 
-| Script         | Command                | Description                                                                                |
-| :------------- | :--------------------- | :----------------------------------------------------------------------------------------- |
-| `dev`          | `vite`                 | Starts the development server with Hot Module Replacement (HMR).                           |
-| `mock`         | `vite --mode mock`     | Starts the development server with MSW enabled for local API mocking.                      |
-| `build`        | `tsc -b && vite build` | Compiles TypeScript and builds the production bundle in the `dist/` directory.             |
-| `test`         | `vitest`               | Runs the test suite using [Vitest](https://vitest.dev/).                                   |
-| `lint`         | `eslint .`             | Analyzes code for potential errors and styling issues using [ESLint](https://eslint.org/). |
-| `preview`      | `vite preview`         | Previews the production build locally.                                                     |
-| `format`       | `prettier --write .`   | Automatically formats the entire codebase using [Prettier](https://prettier.io/).          |
-| `format:check` | `prettier --check .`   | Checks if the codebase follows the Prettier formatting rules.                              |
-| `knip`         | `knip`                 | Finds unused files, dependencies, and exports to keep the bundle lean.                     |
-| `prepare`      | `husky`                | Automatically sets up Git hooks for local development.                                     |
-| `cz`           | `cz`                   | Launches an interactive prompt to write a conventional commit message.                     |
+| Script    | Command                | Description                                                                       |
+| :-------- | :--------------------- | :-------------------------------------------------------------------------------- |
+| `dev`     | `vite`                 | Starts the development server with HMR.                                           |
+| `mock`    | `vite --mode mock`     | Starts the development server with MSW enabled for local API mocking.             |
+| `build`   | `tsc -b && vite build` | Compiles TypeScript and builds the production bundle in the `dist/` directory.    |
+| `test`    | `vitest`               | Runs the test suite using [Vitest](https://vitest.dev/).                          |
+| `lint`    | `eslint .`             | Analyzes code for potential errors and styling issues.                            |
+| `preview` | `vite preview`         | Previews the production build locally.                                            |
+| `format`  | `prettier --write .`   | Automatically formats the entire codebase using [Prettier](https://prettier.io/). |
+| `knip`    | `knip`                 | Finds unused files and dependencies.                                              |
+| `cz`      | `cz`                   | Launches an interactive prompt for conventional commits.                          |
 
-> **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint via `lint-staged`. Commit messages are also enforced using **commitlint** with the [Conventional Commits](https://www.conventionalcommits.org/) standard. If you get a formatting error, run `pnpm format` to auto-fix it, then stage the changes and try committing again!
-
-> **Tip**: This project has [Commitizen](https://commitizen-tools.github.io/commitizen/) set up. Run `pnpm cz` instead of `git commit` for a guided conventional commit experience.
+> **Note on Committing**: This project uses **Husky** to enforce code quality. Before any `git commit`, Husky runs Prettier and ESLint via `lint-staged`. Commit messages are also enforced using **commitlint**.
 
 ## Environment Variables
 
@@ -111,7 +107,7 @@ Environment variables are managed per Vite's standard implementation. All variab
    ```bash
    cp .env.example .env
    ```
-2. Update the values in `.env` based on your local setup (e.g., pointing `VITE_API_BASE_URL` to your local backend).
+2. Update the values in `.env` based on your local setup.
 
 ### Environment-Specific Files
 
@@ -119,14 +115,12 @@ Vite allows you to override variables based on the execution "mode" using `.env.
 
 - **`.env`**: Loaded in all cases (lowest priority).
 - **`.env.local`**: Loaded in all cases, ignored by git (always overrides).
-- **`.env.mock`**: Specifically loaded when running `pnpm mock`. It empties the `VITE_API_BASE_URL` to ensure the app intercepts requests locally.
+- **`.env.mock`**: Specifically loaded when running `pnpm mock`. It empties the `VITE_API_BASE_URL` to ensure MSW intercepts requests.
 
 **Available Variables:**
 | Variable | Description |
-| :------------------ | :---------------------------------------------------------------------------------------------- |
-| `VITE_API_BASE_URL` | The fully qualified URL to your backend REST API (e.g., `http://localhost:8000`). |
-| `VITE_EMAIL_GATE` | Enables pre-registration check. When `true`, users must provide an email that exists in the `clients` list before seeing the registration form. |
-| `VITE_ACCOUNT_VERIFY` | Enables verification code screen after signup. When `true`, registration redirects to verify instead of login. |
+| :--- | :--- |
+| `VITE_API_BASE_URL` | The fully qualified URL to your backend REST API. |
 
 ## Mocking
 
@@ -145,9 +139,20 @@ pnpm mock
 1. **Handlers**: Add new MSW interceptors in `src/mocks/handlers.ts`.
 2. **Adapters**: Ensure your mock adapter in `src/features/[feature]/adapters/[name]-mock.adapter.ts` is registered in `src/lib/api/config.ts`.
 
-## Deployment
+## Infrastructure & Deployment
 
-The project includes a GitHub Actions workflow for automated deployment to AWS S3 and CloudFront.
+The project is designed to be hosted as a static site on **AWS S3** and distributed through **Amazon CloudFront**.
+
+### Infrastructure
+
+The underlying infrastructure is defined using **AWS CloudFormation (SAM)**. It includes:
+
+- **S3 Bucket**: Optimized for static web hosting.
+- **CloudFront Distribution**: For global content delivery with SSL/TLS.
+- **CloudFront Function**: Handles URL rewrites for single-page application (SPA) routing.
+- **IAM Roles**: Secure OIDC-based roles for GitHub Actions.
+
+For detailed setup and deployment instructions, see the Infrastructure README inside the infra/ location.
 
 ### GitHub Actions Workflow
 

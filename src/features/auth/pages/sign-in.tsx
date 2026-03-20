@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ROUTES } from '@/constants/routes'
-import config from '@/configs/general'
 
 export function SignIn() {
   const { t } = useTranslation('auth')
@@ -35,7 +34,7 @@ export function SignIn() {
           <p className='text-sm font-medium text-muted-foreground'>
             {t('signIn.footer.text')}{' '}
             <Link
-              to={config.auth.emailGate ? ROUTES.EMAIL_GATE : ROUTES.SIGN_UP}
+              to={ROUTES.SIGN_UP}
               className='font-bold text-primary transition-all hover:underline'
             >
               {t('signIn.footer.link')}

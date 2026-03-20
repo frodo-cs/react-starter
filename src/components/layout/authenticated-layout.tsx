@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, useEffect, useCallback, type ReactNode } from 'react'
 import { Header } from './header'
 import { Sidebar } from './sidebar'
 import { Contact } from './information'
@@ -6,14 +6,17 @@ import { Outlet } from '@tanstack/react-router'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-type AuthenticatedLayoutProps = {
+interface AuthenticatedLayoutProps {
   children?: ReactNode
 }
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const toggleMobileMenu = useCallback(
+    () => setIsMobileMenuOpen((prev) => !prev),
+    []
+  )
 
   useEffect(() => {
     if (!window) return
@@ -63,18 +66,20 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
         </aside>
 
         {/* Desktop */}
-        <aside className='hidden w-72 shrink-0 p-4 lg:block'>
-          <div className='flex h-full flex-col gap-4 overflow-y-auto'>
-            <Sidebar />
-            <Contact />
-          </div>
-        </aside>
+        <div className='mx-auto flex w-full max-w-360'>
+          <aside className='hidden w-80 shrink-0 p-0 md:p-8 lg:block'>
+            <div className='flex h-full flex-col gap-4 overflow-y-auto'>
+              <Sidebar />
+              <Contact />
+            </div>
+          </aside>
 
-        <main className='flex-1 overflow-y-auto'>
-          <div className='mx-auto max-w-7xl p-6 md:p-8'>
-            {children ?? <Outlet />}
-          </div>
-        </main>
+          <main className='flex-1 overflow-y-auto'>
+            <div className='mx-auto max-w-7xl p-6 md:p-8'>
+              {children ?? <Outlet />}
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   )
