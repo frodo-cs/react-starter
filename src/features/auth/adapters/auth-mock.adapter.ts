@@ -49,18 +49,11 @@ export class AuthAdapterMock implements IAuthAdapter {
   }
 
   async register(payload: SignUpPayload): Promise<void> {
-    try {
-      await apiClient.post(`${this.baseUrl}/${ENDPOINTS.REGISTER}`, {
-        name: payload.name,
-        identifier: payload.identifier,
-        password: payload.password,
-      })
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('Email already in use')) {
-        throw new Error(AUTH_ERRORS.EMAIL_ALREADY_IN_USE)
-      }
-      throw error
-    }
+    await apiClient.post(`${this.baseUrl}/${ENDPOINTS.REGISTER}`, {
+      name: payload.name,
+      identifier: payload.identifier,
+      password: payload.password,
+    })
   }
 
   async forgotPassword(payload: IdentifierPayload): Promise<void> {

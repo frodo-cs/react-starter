@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { z } from 'zod'
 
 import { InputField } from '@/components/shared/input-field'
 import { Button } from '@/components/ui/button'
@@ -9,9 +8,8 @@ import { getErrorMessage } from '@/lib/error-message'
 import { submitWithToast } from '@/lib/toast-promise'
 
 import { useForgotPassword } from '../hooks/use-forgot-password'
-import { identifierSchema } from '../schemas/auth'
-
-type FormData = z.infer<typeof identifierSchema>
+import type { IdentifierPayload } from '../interfaces/api'
+import { createIdentifierSchema } from '../schemas/auth'
 
 interface Props {
   onSuccess?: () => void
@@ -20,16 +18,17 @@ interface Props {
 export function ForgotPasswordForm({ onSuccess }: Props) {
   const { t } = useTranslation('auth')
   const { mutateAsync, isPending } = useForgotPassword()
+  const identifierSchema = createIdentifierSchema()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<IdentifierPayload>({
     resolver: zodResolver(identifierSchema),
   })
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: IdentifierPayload) {
     const result = await submitWithToast(mutateAsync(data), {
       loading: t('forgotPassword.toast.loading'),
       success: t('forgotPassword.toast.success'),

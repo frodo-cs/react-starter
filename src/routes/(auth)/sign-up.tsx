@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 const searchSchema = z.object({
   email: z.email().optional().catch(undefined),
-  zoho: z.string().optional().catch(undefined),
+  ref: z.string().optional().catch(undefined),
 })
 
 export const Route = createFileRoute('/(auth)/sign-up')({

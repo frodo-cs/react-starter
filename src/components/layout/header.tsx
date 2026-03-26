@@ -3,9 +3,10 @@ import { LogOut, Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
-import { useAuthStore } from '@/features/auth/store/auth-store'
+import { performLogout } from '@/query-client'
 
 import { LanguageSwitcher } from './language-switcher'
+import { ThemeSwitcher } from './theme-switcher'
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -13,15 +14,14 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const navigate = useNavigate()
-  const { logout } = useAuthStore()
 
   const handleLogout = async () => {
-    logout()
+    performLogout()
     await navigate({ to: ROUTES.SIGN_IN })
   }
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b bg-white'>
+    <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='mx-auto flex h-16 w-full max-w-360 items-center justify-between px-4 sm:px-6 lg:px-12'>
         <div className='flex items-center gap-4'>
           <Button variant='ghost' size='icon' onClick={onMenuClick} className='lg:hidden'>
@@ -31,6 +31,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         </div>
 
         <div className='flex items-center gap-4'>
+          <ThemeSwitcher />
           <LanguageSwitcher />
           <Button
             variant='ghost'

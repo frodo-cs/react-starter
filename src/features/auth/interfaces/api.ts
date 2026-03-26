@@ -1,9 +1,13 @@
 import type { z } from 'zod'
 
-import type { identifierSchema, signInSchema, signUpSchema } from '../schemas/auth'
+import type {
+  createIdentifierSchema,
+  createSignInSchema,
+  createSignUpSchema,
+} from '../schemas/auth'
 
-export type Credentials = z.infer<typeof signInSchema>
-export type SignUpPayload = z.infer<typeof signUpSchema>
-export type IdentifierPayload = z.infer<typeof identifierSchema>
+export type Credentials = z.infer<ReturnType<typeof createSignInSchema>>
+export type SignUpPayload = z.infer<ReturnType<typeof createSignUpSchema>>
+export type IdentifierPayload = z.infer<ReturnType<typeof createIdentifierSchema>>
 
 export type { LoginResponse } from '../adapters/auth-base.adapter'

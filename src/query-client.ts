@@ -24,7 +24,7 @@ const handleGlobalError = (error: unknown) => {
       if (!isLoginRequest) {
         const routerInstance = getRouterInstance()
         toast.error(i18n.t('error:toasts.session_expired'))
-        useAuthStore.getState().logout()
+        performLogout()
         if (routerInstance) {
           const rawRedirect = routerInstance.history.location.href
           const redirect = rawRedirect?.startsWith('/') ? rawRedirect : undefined
@@ -50,6 +50,16 @@ const handleGlobalError = (error: unknown) => {
       toast.error(i18n.t('error:toasts.content_not_modified'))
     }
   }
+}
+
+/**
+ * Clears auth state and the query cache.
+ * Use this for both explicit logout and 401-triggered logout.
+ */
+export function performLogout() {
+  useAuthStore.getState().logout()
+  queryClient.cancelQueries()
+  queryClient.clear()
 }
 
 export const queryClient = new QueryClient({

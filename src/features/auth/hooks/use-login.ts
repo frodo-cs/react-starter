@@ -4,13 +4,6 @@ import { login } from '../api/login'
 import type { Credentials } from '../interfaces/api'
 import { useAuthStore } from '../store/auth-store'
 
-/**
- * Hook for user login.
- *
- * Returns a mutation that handles credentials submission,
- * triggers a success toast with the username, and updates
- * the auth store on successful verification.
- */
 export const useLogin = () => {
   const { setAuth } = useAuthStore()
 

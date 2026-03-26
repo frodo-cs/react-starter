@@ -50,14 +50,114 @@ This starter uses tools that provide CLI generation out of the box:
 - **Routing**: Simply create a file in `src/routes/` and TanStack router will automatically generate the types and route tree.
 - **UI Components**: To add a new UI component, run `npx shadcn-ui@latest add [component]` and it will be placed in `src/components/ui`.
 
-## Localization
+## Guides
 
-Full support for English and Spanish is built-in. Translations are managed in `src/locales/` and configured in `src/config/i18n.ts`. All error messages, labels, and placeholders are localized.
+### Adding a New Feature
 
-To add a new language:
+Features live under `src/features/`. Each feature is a self-contained module with its own components, pages, adapters, hooks, stores, schemas, and constants.
 
-1. Create a new folder in `src/locales/`.
-2. Update the `i18n.ts` configuration.
+1. Create the feature directory with the needed subfolders:
+
+   ```text
+   src/features/billing/
+   ├── adapters/          # API adapters (base interface + implementations)
+   ├── api/               # TanStack Query hooks (queries & mutations)
+   ├── components/        # Feature-specific UI components
+   ├── constants/         # Feature-scoped constants
+   ├── hooks/             # Feature-scoped hooks
+   ├── interfaces/        # TypeScript types and Zod-inferred types
+   ├── pages/             # Full page components rendered by routes
+   ├── schemas/           # Zod validation schemas (use factory functions)
+   ├── store/             # Zustand stores (if the feature needs client state)
+   └── utils/             # Feature-scoped utilities
+   ```
+
+2. Create a route file in `src/routes/` — TanStack Router auto-generates the route tree.
+
+3. If the feature calls an API, follow the **Adding a New Adapter** guide below.
+
+4. Add translation keys for the feature in every language folder under `src/locales/`.
+
+### Adding a New Adapter
+
+The adapter pattern decouples UI logic from API implementation. Each adapter implements a base interface, so the app can swap backends (mock, REST, GraphQL) without changing component code.
+
+1. **Define the interface** in `src/features/<feature>/adapters/<feature>-base.adapter.ts`:
+
+   ```ts
+   export interface IBillingAdapter {
+     getInvoices(): Promise<Invoice[]>
+     pay(invoiceId: string): Promise<void>
+   }
+   ```
+
+2. **Create the mock implementation** in `src/features/<feature>/adapters/<feature>-mock.adapter.ts`:
+
+   ```ts
+   import { apiClient } from '@/lib/api/axios-instance'
+   import type { IBillingAdapter } from './billing-base.adapter'
+
+   export class BillingAdapterMock implements IBillingAdapter {
+     private baseUrl: string
+     constructor(baseUrl: string) {
+       this.baseUrl = baseUrl
+     }
+
+     async getInvoices() {
+       const response = await apiClient.get(`${this.baseUrl}/invoices`)
+       return response.data
+     }
+
+     async pay(invoiceId: string) {
+       await apiClient.post(`${this.baseUrl}/invoices/${invoiceId}/pay`)
+     }
+   }
+   ```
+
+3. **Register the adapter** in `src/lib/api/config.ts`:
+
+   ```ts
+   import type { IBillingAdapter } from '@/features/billing/adapters/billing-base.adapter'
+   import { BillingAdapterMock } from '@/features/billing/adapters/billing-mock.adapter'
+
+   const ADAPTERS = {
+     mock: { auth: AuthAdapterMock, billing: BillingAdapterMock },
+     development: { auth: AuthAdapterMock, billing: BillingAdapterMock },
+     production: { auth: AuthAdapterMock, billing: BillingAdapterMock },
+   } as const
+
+   function createBillingAdapter(): IBillingAdapter {
+     const config = getAdapterConfig()
+     const AdapterClass = config.billing
+     return new AdapterClass(API_BASE_URL)
+   }
+
+   export const billingAdapter = createBillingAdapter()
+   ```
+
+4. When building the production adapter, create `<feature>-rest.adapter.ts` that implements the same interface and swap it into the `production` (and `development`) entries in `ADAPTERS`.
+
+### Adding a New Language
+
+Translations are managed in `src/locales/` and configured in `src/configs/i18n.ts`.
+
+1. Create a new folder under `src/locales/` (e.g., `src/locales/fr/`) and add a JSON file for each namespace (`auth.json`, `error.json`, `general.json`). Copy an existing language as a starting point and translate the values.
+
+2. Import the new files in `src/configs/i18n.ts` and add them to the `resources` object:
+
+   ```ts
+   import authFr from '../locales/fr/auth.json'
+   import errorFr from '../locales/fr/error.json'
+   import generalFr from '../locales/fr/general.json'
+
+   const resources = {
+     en: { error: errorEn, auth: authEn, general: generalEn },
+     es: { error: errorEs, auth: authEs, general: generalEs },
+     fr: { error: errorFr, auth: authFr, general: generalFr },
+   }
+   ```
+
+3. Add the new locale to the language switcher component so users can select it.
 
 ## Getting Started
 

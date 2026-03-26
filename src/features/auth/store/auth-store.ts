@@ -1,9 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { eventBus } from '@/lib/event-bus'
-import { queryClient } from '@/query-client'
-
 import type { AuthState, AuthStoreData } from '../interfaces/store'
 
 const INITIAL_STATE: AuthState = {
@@ -31,9 +28,6 @@ export const useAuthStore = create<AuthStoreData>()(
       logout: () => {
         if (!get().user) return
         set(INITIAL_STATE)
-        queryClient.cancelQueries()
-        queryClient.clear()
-        eventBus.emit('auth:logout')
       },
     }),
     {

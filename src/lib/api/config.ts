@@ -19,11 +19,12 @@ const ADAPTERS = {
   mock: {
     auth: AuthAdapterMock,
   },
-  // Add other modes here (e.g., development, production) mapping to real adapters
   development: {
-    auth: AuthAdapterMock, // Or a RestAdapter once implemented
+    // placeholder
+    auth: AuthAdapterMock,
   },
   production: {
+    // placeholder
     auth: AuthAdapterMock,
   },
 } as const

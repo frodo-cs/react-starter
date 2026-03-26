@@ -3,3 +3,7 @@
 @import './theme.css';
 
 @custom-variant dark (&:is(.dark *));
+
+body {
+  @apply bg-background text-foreground antialiased;
+}

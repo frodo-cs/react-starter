@@ -16,6 +16,5 @@ export const Route = createFileRoute('/_authenticated')({
       })
     }
   },
-  loader: () => import('@/features/dashboard/layout'),
   component: AuthenticatedLayout,
 })

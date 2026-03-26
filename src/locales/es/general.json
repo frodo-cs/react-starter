@@ -12,5 +12,11 @@
   "layout": {
     "sidebar": "Menú lateral",
     "contact": "Contacto"
+  },
+  "theme": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
   }
 }

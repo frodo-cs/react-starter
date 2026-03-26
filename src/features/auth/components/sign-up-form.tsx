@@ -4,7 +4,6 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { z } from 'zod'
 
 import { InputField } from '@/components/shared/input-field'
 import { Button } from '@/components/ui/button'
@@ -13,31 +12,26 @@ import { getErrorMessage } from '@/lib/error-message'
 import { submitWithToast } from '@/lib/toast-promise'
 
 import { useRegister } from '../hooks/use-register'
-import { signUpSchema } from '../schemas/auth'
+import type { SignUpPayload } from '../interfaces/api'
+import { createSignUpSchema } from '../schemas/auth'
 
-type FormData = z.infer<typeof signUpSchema>
-
-/**
- * Form component for user registration.
- *
- * Handles account creation and maintains session state upon success.
- */
 export function SignUpForm() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const { mutateAsync, isPending } = useRegister()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const signUpSchema = createSignUpSchema()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<SignUpPayload>({
     resolver: zodResolver(signUpSchema),
   })
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: SignUpPayload) {
     const result = await submitWithToast(mutateAsync(data), {
       loading: t('signUp.toast.loading'),
       success: t('signUp.toast.success'),

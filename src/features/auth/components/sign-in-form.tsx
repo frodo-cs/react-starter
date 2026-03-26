@@ -4,7 +4,6 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { z } from 'zod'
 
 import { InputField } from '@/components/shared/input-field'
 import { Button } from '@/components/ui/button'
@@ -15,15 +14,9 @@ import { submitWithToast } from '@/lib/toast-promise'
 
 import type { LoginResponse } from '../adapters/auth-base.adapter'
 import { useLogin } from '../hooks/use-login'
-import { signInSchema } from '../schemas/auth'
+import type { Credentials } from '../interfaces/api'
+import { createSignInSchema } from '../schemas/auth'
 
-type FormData = z.infer<typeof signInSchema>
-
-/**
- * Form component for user authentication.
- *
- * Handles standard login and maintains session state upon success.
- */
 export function SignInForm() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
@@ -32,16 +25,17 @@ export function SignInForm() {
   const loginMutation = useLogin()
   const { mutateAsync, isPending } = loginMutation
   const [showPassword, setShowPassword] = useState(false)
+  const signInSchema = createSignInSchema()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<Credentials>({
     resolver: zodResolver(signInSchema),
   })
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: Credentials) {
     const loginResult = await submitWithToast(mutateAsync(data), {
       loading: t('signIn.toast.loading'),
       success: (response: LoginResponse) =>
