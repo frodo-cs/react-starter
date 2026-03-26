@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
-import { useAuthStore } from '@/stores/auth-store'
+
 import { login } from '../api/login'
 import type { Credentials } from '../interfaces/api'
+import { useAuthStore } from '../store/auth-store'
 
 /**
  * Hook for user login.
@@ -16,7 +17,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: Credentials) => login(credentials),
     onSuccess: (response) => {
-      if (response.verified !== false && response.user && response.token) {
+      if (response.user && response.token) {
         setAuth(response.user, response.token)
       }
     },

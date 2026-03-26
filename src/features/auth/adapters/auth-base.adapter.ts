@@ -1,26 +1,10 @@
-import type {
-  Credentials,
-  SignUpPayload,
-  IdentifierPayload,
-} from '@/features/auth/interfaces/api'
+import type { Credentials, IdentifierPayload, SignUpPayload } from '@/features/auth/interfaces/api'
 import type { AuthUser } from '@/features/auth/interfaces/auth'
 
 export interface LoginResponse {
-  verified?: boolean
   token?: string
   user?: AuthUser
 }
-
-/**
- * Standardized error tokens for authentication flows.
- * Adapters should throw errors with these messages to ensure
- * the API layer remains implementation-agnostic.
- */
-export const AUTH_ERRORS = {
-  USER_NOT_FOUND: 'userNotFound',
-  INVALID_CODE: 'invalidCode',
-  EMAIL_ALREADY_IN_USE: 'emailAlreadyInUse',
-} as const
 
 /**
  * Base contract for Authentication Adapters.

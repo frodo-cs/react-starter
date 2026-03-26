@@ -1,17 +1,19 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
-import type { z } from 'zod'
-import { useTranslation } from 'react-i18next'
-import { signUpSchema } from '../schemas/auth'
-import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import type { z } from 'zod'
+
 import { InputField } from '@/components/shared/input-field'
-import { useRegister } from '../hooks/use-register'
-import { getErrorMessage } from '@/lib/error-message'
+import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
+import { getErrorMessage } from '@/lib/error-message'
 import { submitWithToast } from '@/lib/toast-promise'
+
+import { useRegister } from '../hooks/use-register'
+import { signUpSchema } from '../schemas/auth'
 
 type FormData = z.infer<typeof signUpSchema>
 
@@ -39,8 +41,7 @@ export function SignUpForm() {
     const result = await submitWithToast(mutateAsync(data), {
       loading: t('signUp.toast.loading'),
       success: t('signUp.toast.success'),
-      error: (error) =>
-        t('signUp.toast.error', { error: getErrorMessage(error) }),
+      error: (error) => t('signUp.toast.error', { error: getErrorMessage(error) }),
     })
 
     if (!result) return
@@ -112,11 +113,7 @@ export function SignUpForm() {
         />
       </div>
 
-      <Button
-        type='submit'
-        className='h-11 w-full font-bold'
-        disabled={isPending}
-      >
+      <Button type='submit' className='h-11 w-full font-bold' disabled={isPending}>
         {isPending ? t('signUp.submitting') : t('signUp.submit')}
       </Button>
     </form>

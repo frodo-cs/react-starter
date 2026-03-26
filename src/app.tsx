@@ -1,5 +1,6 @@
 import { RouterProvider } from '@tanstack/react-router'
-import { useAuthStore } from '@/stores/auth-store'
+
+import { useAuthStore } from './features/auth/store/auth-store'
 import { router } from './router'
 
 export function App() {

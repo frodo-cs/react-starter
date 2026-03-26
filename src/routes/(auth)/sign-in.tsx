@@ -1,9 +1,6 @@
+import { createFileRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
-import {
-  createFileRoute,
-  redirect,
-  lazyRouteComponent,
-} from '@tanstack/react-router'
+
 import { ROUTES } from '@/constants/routes'
 
 const searchSchema = z.object({

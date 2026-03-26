@@ -1,29 +1,37 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import type { AuthState, AuthStoreData } from '../interfaces'
+import { createJSONStorage, persist } from 'zustand/middleware'
+
 import { eventBus } from '@/lib/event-bus'
 import { queryClient } from '@/query-client'
+
+import type { AuthState, AuthStoreData } from '../interfaces/store'
 
 const INITIAL_STATE: AuthState = {
   user: null,
   accessToken: null,
-  refreshToken: null,
 }
 
 export const useAuthStore = create<AuthStoreData>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...INITIAL_STATE,
 
       setAuth: (user, token) => {
-        const accessToken = token?.access ?? null
-        const refreshToken = token?.refresh ?? null
+        const accessToken = token ?? null
 
-        set({ user, accessToken, refreshToken })
+        set({ user, accessToken })
+      },
+
+      refreshAuth: (token) => {
+        const accessToken = token ?? get().accessToken
+
+        set({ accessToken })
       },
 
       logout: () => {
+        if (!get().user) return
         set(INITIAL_STATE)
+        queryClient.cancelQueries()
         queryClient.clear()
         eventBus.emit('auth:logout')
       },
@@ -35,7 +43,6 @@ export const useAuthStore = create<AuthStoreData>()(
       partialize: (state): AuthState => ({
         user: state.user,
         accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
       }),
     }
   )

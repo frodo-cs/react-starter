@@ -1,19 +1,12 @@
-import { ROUTES } from '@/constants/routes'
+import { ENDPOINTS } from '@/constants/endpoints'
 
-const PUBLIC_ENDPOINTS = [
-  ROUTES.SIGN_IN,
-  ROUTES.SIGN_UP,
-  ROUTES.FORGOT_PASSWORD,
-]
+const PUBLIC_AUTH_ENDPOINTS = [
+  ENDPOINTS.LOGIN,
+  ENDPOINTS.REGISTER,
+  ENDPOINTS.FORGOT_PASSWORD,
+] as const
 
-/**
- * Determines whether a given URL corresponds to a public authentication endpoint
- * that should not trigger session expiration checks or require a valid token.
- *
- * @param url - The URL string to verify.
- * @returns true if the URL is a public authentication endpoint, false otherwise.
- */
 export function isPublicAuthEndpoint(url?: string): boolean {
   if (!url) return false
-  return PUBLIC_ENDPOINTS.some((endpoint) => url.includes(endpoint))
+  return PUBLIC_AUTH_ENDPOINTS.some((endpoint) => url.includes(`/${endpoint}`))
 }

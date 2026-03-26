@@ -1,7 +1,8 @@
-import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { ArrowLeft } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ForgotPasswordForm } from '../components/forgot-password-form'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,8 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ArrowLeft } from 'lucide-react'
 import { ROUTES } from '@/constants/routes'
+
+import { ForgotPasswordForm } from '../components/forgot-password-form'
 
 export function ForgotPassword() {
   const [submitted, setSubmitted] = useState(false)
@@ -47,9 +49,7 @@ export function ForgotPassword() {
           </CardHeader>
           <CardFooter className='flex flex-col pt-4'>
             <Button asChild className='h-11 w-full font-bold'>
-              <Link to={ROUTES.SIGN_IN}>
-                {t('forgotPassword.success.action')}
-              </Link>
+              <Link to={ROUTES.SIGN_IN}>{t('forgotPassword.success.action')}</Link>
             </Button>
           </CardFooter>
         </Card>

@@ -1,5 +1,5 @@
-import { z } from 'zod'
 import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { z } from 'zod'
 
 const searchSchema = z.object({
   email: z.email().optional().catch(undefined),

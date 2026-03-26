@@ -1,12 +1,13 @@
 import { type QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { Toaster } from '@/components/ui/sonner'
+
 import { NavigationProgress } from '@/components/navigation-progress'
+import { Toaster } from '@/components/ui/sonner'
+import type { AuthStoreData } from '@/features/auth/interfaces/store'
 import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
-import type { AuthState } from '@/stores/auth-store'
 
 function RootComponent() {
   return (
@@ -26,7 +27,7 @@ function RootComponent() {
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
-  auth: AuthState | undefined
+  auth: AuthStoreData | undefined
 }>()({
   component: RootComponent,
   notFoundComponent: NotFoundError,

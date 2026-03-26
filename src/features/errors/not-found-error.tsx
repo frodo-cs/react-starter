@@ -1,14 +1,9 @@
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '@/constants/routes'
+
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { ROUTES } from '@/constants/routes'
 
 export function NotFoundError() {
   const { t } = useTranslation('error')

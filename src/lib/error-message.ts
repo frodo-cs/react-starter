@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios'
+
 import i18n from '@/configs/i18n'
 import { AUTH_ERRORS } from '@/features/auth/constants/auth'
 

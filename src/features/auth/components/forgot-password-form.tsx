@@ -1,13 +1,15 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { z } from 'zod'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { identifierSchema } from '../schemas/auth'
-import { Button } from '@/components/ui/button'
+import type { z } from 'zod'
+
 import { InputField } from '@/components/shared/input-field'
-import { useForgotPassword } from '../hooks/use-forgot-password'
+import { Button } from '@/components/ui/button'
 import { getErrorMessage } from '@/lib/error-message'
 import { submitWithToast } from '@/lib/toast-promise'
+
+import { useForgotPassword } from '../hooks/use-forgot-password'
+import { identifierSchema } from '../schemas/auth'
 
 type FormData = z.infer<typeof identifierSchema>
 
@@ -31,8 +33,7 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
     const result = await submitWithToast(mutateAsync(data), {
       loading: t('forgotPassword.toast.loading'),
       success: t('forgotPassword.toast.success'),
-      error: (error) =>
-        t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
+      error: (error) => t('forgotPassword.toast.error', { error: getErrorMessage(error) }),
     })
 
     if (!result) return
@@ -54,14 +55,8 @@ export function ForgotPasswordForm({ onSuccess }: Props) {
         />
       </div>
 
-      <Button
-        type='submit'
-        className='h-11 w-full font-bold'
-        disabled={isPending}
-      >
-        {isPending
-          ? t('forgotPassword.submitting')
-          : t('forgotPassword.submit')}
+      <Button type='submit' className='h-11 w-full font-bold' disabled={isPending}>
+        {isPending ? t('forgotPassword.submitting') : t('forgotPassword.submit')}
       </Button>
     </form>
   )

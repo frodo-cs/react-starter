@@ -23,9 +23,7 @@ export function getRouterInstance(): AnyRouter | null {
 
 export function requireRouterInstance(): AnyRouter {
   if (!routerInstance) {
-    throw new Error(
-      'Router instance not set. Ensure router is initialized before use.'
-    )
+    throw new Error('Router instance not set. Ensure router is initialized before use.')
   }
   return routerInstance
 }

@@ -1,8 +1,11 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useAuthStore } from '@/stores/auth-store'
-import { Button } from '@/components/ui/button'
 import { LogOut, Menu } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
+import { useAuthStore } from '@/features/auth/store/auth-store'
+
+import { LanguageSwitcher } from './language-switcher'
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -21,18 +24,14 @@ export function Header({ onMenuClick }: HeaderProps) {
     <header className='sticky top-0 z-50 w-full border-b bg-white'>
       <div className='mx-auto flex h-16 w-full max-w-360 items-center justify-between px-4 sm:px-6 lg:px-12'>
         <div className='flex items-center gap-4'>
-          <Button
-            variant='ghost'
-            size='icon'
-            onClick={onMenuClick}
-            className='lg:hidden'
-          >
+          <Button variant='ghost' size='icon' onClick={onMenuClick} className='lg:hidden'>
             <Menu className='h-5 w-5' />
           </Button>
           <span className='font-bold'>Icon</span>
         </div>
 
         <div className='flex items-center gap-4'>
+          <LanguageSwitcher />
           <Button
             variant='ghost'
             size='icon'

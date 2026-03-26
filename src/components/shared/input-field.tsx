@@ -1,13 +1,11 @@
 import type * as React from 'react'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
 import type { FieldError } from 'react-hook-form'
 
-interface InputFieldProps extends Omit<
-  React.ComponentProps<'input'>,
-  'prefix'
-> {
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
+
+interface InputFieldProps extends Omit<React.ComponentProps<'input'>, 'prefix'> {
   label?: string
   error?: FieldError | string | string[]
   prefix?: React.ReactNode
@@ -67,11 +65,7 @@ export function InputField({
           aria-describedby={errorId}
           {...props}
         />
-        {suffix && (
-          <div className='absolute inset-y-0 right-3 flex items-center'>
-            {suffix}
-          </div>
-        )}
+        {suffix && <div className='absolute inset-y-0 right-3 flex items-center'>{suffix}</div>}
       </div>
       {hasError && (
         <div id={errorId} className='mt-1 flex flex-col gap-1'>

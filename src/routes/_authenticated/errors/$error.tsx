@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
+
 import { ForbiddenError } from '@/features/errors/forbidden-error'
 import { GeneralError } from '@/features/errors/general-error'
-import { NotFoundError } from '@/features/errors/not-found-error'
 import { MaintenanceError } from '@/features/errors/maintenance-error'
+import { NotFoundError } from '@/features/errors/not-found-error'
 import { UnauthorizedError } from '@/features/errors/unauthorized-error'
 
 export const Route = createFileRoute('/_authenticated/errors/$error')({
@@ -22,10 +23,8 @@ function RouteComponent() {
   const ErrorComponent = errorMap[error] || NotFoundError
 
   return (
-    <>
-      <div className='flex-1 [&>div]:h-full'>
-        <ErrorComponent />
-      </div>
-    </>
+    <div className='flex-1 [&>div]:h-full'>
+      <ErrorComponent />
+    </div>
   )
 }

@@ -1,11 +1,13 @@
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { QueryCache, QueryClient, MutationCache } from '@tanstack/react-query'
 import { toast } from 'sonner'
+
 import i18n from '@/configs/i18n'
-import { useAuthStore } from '@/stores/auth-store'
-import { ROUTES } from './constants/routes'
-import { ENDPOINTS } from './constants/endpoints'
+import { useAuthStore } from '@/features/auth/store/auth-store'
 import { getRouterInstance } from '@/lib/router-instance'
+
+import { ENDPOINTS } from './constants/endpoints'
+import { ROUTES } from './constants/routes'
 
 /**
  * Global API Error Handler.
@@ -25,9 +27,7 @@ const handleGlobalError = (error: unknown) => {
         useAuthStore.getState().logout()
         if (routerInstance) {
           const rawRedirect = routerInstance.history.location.href
-          const redirect = rawRedirect?.startsWith('/')
-            ? rawRedirect
-            : undefined
+          const redirect = rawRedirect?.startsWith('/') ? rawRedirect : undefined
           routerInstance.navigate({
             to: ROUTES.SIGN_IN,
             search: { redirect },
@@ -44,8 +44,7 @@ const handleGlobalError = (error: unknown) => {
     }
     if (error.response?.status === 403) {
       const routerInstance = getRouterInstance()
-      if (routerInstance)
-        routerInstance.navigate({ to: ROUTES.FORBIDDEN, replace: true })
+      if (routerInstance) routerInstance.navigate({ to: ROUTES.FORBIDDEN, replace: true })
     }
     if (error.response?.status === 304) {
       toast.error(i18n.t('error:toasts.content_not_modified'))

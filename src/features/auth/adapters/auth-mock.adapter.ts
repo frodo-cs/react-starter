@@ -1,23 +1,16 @@
-import type {
-  Credentials,
-  SignUpPayload,
-  IdentifierPayload,
-} from '@/features/auth/interfaces/api'
-import { apiClient } from '@/lib/api/axios-instance'
-import {
-  type IAuthAdapter,
-  type LoginResponse,
-  AUTH_ERRORS,
-} from './auth-base.adapter'
 import { ENDPOINTS } from '@/constants/endpoints'
+import type { Credentials, IdentifierPayload, SignUpPayload } from '@/features/auth/interfaces/api'
+import { apiClient } from '@/lib/api/axios-instance'
+
+import { AUTH_ERRORS } from '../constants/auth'
+import { type IAuthAdapter, type LoginResponse } from './auth-base.adapter'
 
 interface LoginResponseMockDTO {
-  verified: boolean
   accessToken?: string
   user?: {
     id: string
     name: string
-    email: string
+    username: string
   }
 }
 
@@ -29,15 +22,17 @@ export class AuthAdapterMock implements IAuthAdapter {
   }
 
   private transformLogin(dto: LoginResponseMockDTO): LoginResponse {
-    if (!dto.verified) return { verified: false }
+    if (!dto.user || !dto.accessToken) {
+      throw new Error(AUTH_ERRORS.SIGN_IN_ERROR)
+    }
+
     return {
-      verified: true,
+      token: dto.accessToken,
       user: {
-        id: dto.user!.id,
-        name: dto.user!.name,
-        email: dto.user!.email,
+        id: dto.user.id,
+        identifier: dto.user.username,
+        name: dto.user.name,
       },
-      token: dto.accessToken!,
     }
   }
 
@@ -61,10 +56,7 @@ export class AuthAdapterMock implements IAuthAdapter {
         password: payload.password,
       })
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message.includes('Email already in use')
-      ) {
+      if (error instanceof Error && error.message.includes('Email already in use')) {
         throw new Error(AUTH_ERRORS.EMAIL_ALREADY_IN_USE)
       }
       throw error

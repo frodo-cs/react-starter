@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
+
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 import { ROUTES } from '@/constants/routes'
 

@@ -1,13 +1,8 @@
 import { useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function ForbiddenError() {
   const { t } = useTranslation('error')

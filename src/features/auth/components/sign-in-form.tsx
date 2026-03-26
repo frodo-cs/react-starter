@@ -1,19 +1,21 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate, useSearch, useRouter, Link } from '@tanstack/react-router'
-import type { z } from 'zod'
-import { useTranslation } from 'react-i18next'
-import { signInSchema } from '../schemas/auth'
-import { useState } from 'react'
+import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import type { z } from 'zod'
+
 import { InputField } from '@/components/shared/input-field'
-import { useLogin } from '../hooks/use-login'
-import { getErrorMessage } from '@/lib/error-message'
-import type { LoginResponse } from '../adapters/auth-base.adapter'
-import { ROUTES } from '@/constants/routes'
-import { submitWithToast } from '@/lib/toast-promise'
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { ROUTES } from '@/constants/routes'
+import { getErrorMessage } from '@/lib/error-message'
+import { submitWithToast } from '@/lib/toast-promise'
+
+import type { LoginResponse } from '../adapters/auth-base.adapter'
+import { useLogin } from '../hooks/use-login'
+import { signInSchema } from '../schemas/auth'
 
 type FormData = z.infer<typeof signInSchema>
 
@@ -46,8 +48,7 @@ export function SignInForm() {
         response.user
           ? t('signIn.toast.success', { identifier: response.user.name })
           : t('signIn.toast.loading'),
-      error: (error) =>
-        t('signIn.toast.error', { error: getErrorMessage(error) }),
+      error: (error) => t('signIn.toast.error', { error: getErrorMessage(error) }),
     })
 
     if (!loginResult) return
@@ -71,9 +72,7 @@ export function SignInForm() {
 
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor='password'>
-              {t('signIn.fields.password.label')}
-            </Label>
+            <Label htmlFor='password'>{t('signIn.fields.password.label')}</Label>
             <Link
               to={ROUTES.FORGOT_PASSWORD}
               className='text-xs font-bold text-primary transition-all hover:underline'
@@ -102,11 +101,7 @@ export function SignInForm() {
         </div>
       </div>
 
-      <Button
-        type='submit'
-        className='h-11 w-full font-bold'
-        disabled={isPending}
-      >
+      <Button type='submit' className='h-11 w-full font-bold' disabled={isPending}>
         {isPending ? t('signIn.submitting') : t('signIn.submit')}
       </Button>
     </form>

@@ -1,10 +1,13 @@
-import { useState, useEffect, useCallback, type ReactNode } from 'react'
-import { Header } from './header'
-import { Sidebar } from './sidebar'
-import { Contact } from './information'
 import { Outlet } from '@tanstack/react-router'
 import { X } from 'lucide-react'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+
 import { Button } from '@/components/ui/button'
+import { ErrorBoundaryContent } from '@/features/errors/components/error-boundary-content'
+
+import { Header } from './header'
+import { Contact } from './information'
+import { Sidebar } from './sidebar'
 
 interface AuthenticatedLayoutProps {
   children?: ReactNode
@@ -13,10 +16,7 @@ interface AuthenticatedLayoutProps {
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const toggleMobileMenu = useCallback(
-    () => setIsMobileMenuOpen((prev) => !prev),
-    []
-  )
+  const toggleMobileMenu = useCallback(() => setIsMobileMenuOpen((prev) => !prev), [])
 
   useEffect(() => {
     if (!window) return
@@ -38,8 +38,15 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
       <div className='relative flex flex-1 overflow-hidden'>
         {isMobileMenuOpen && (
           <div
+            role='button'
+            tabIndex={-1}
             className='fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden'
             onClick={() => setIsMobileMenuOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setIsMobileMenuOpen(false)
+              }
+            }}
           />
         )}
 
@@ -52,11 +59,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
           <div className='flex h-full flex-col gap-4'>
             <div className='flex items-center justify-between lg:hidden'>
               <span className='font-bold'>Menu</span>
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Button variant='ghost' size='icon' onClick={() => setIsMobileMenuOpen(false)}>
                 <X className='h-5 w-5' />
               </Button>
             </div>
@@ -76,7 +79,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 
           <main className='flex-1 overflow-y-auto'>
             <div className='mx-auto max-w-7xl p-6 md:p-8'>
-              {children ?? <Outlet />}
+              <ErrorBoundaryContent>{children ?? <Outlet />}</ErrorBoundaryContent>
             </div>
           </main>
         </div>

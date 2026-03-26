@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import i18n from '@/configs/i18n'
 
 const passwordSchema = z
@@ -14,9 +15,7 @@ const passwordSchema = z
 const passwordWithConfirmSchema = z
   .object({
     password: passwordSchema,
-    confirmPassword: z
-      .string()
-      .min(1, i18n.t('auth:validation.confirmPasswordRequired')),
+    confirmPassword: z.string().min(1, i18n.t('auth:validation.confirmPasswordRequired')),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: i18n.t('auth:validation.passwordsMatch'),
@@ -36,32 +35,12 @@ export const signUpSchema = z
   .and(passwordWithConfirmSchema)
 
 export const signInSchema = z.object({
-  identifier: z
-    .string()
-    .min(1, i18n.t('auth:validation.identifierRequired'))
-    .toLowerCase()
-    .trim(),
-  password: z
-    .string()
-    .trim()
-    .min(1, i18n.t('auth:validation.passwordRequired')),
+  identifier: z.string().min(1, i18n.t('auth:validation.identifierRequired')).toLowerCase().trim(),
+  password: z.string().trim().min(1, i18n.t('auth:validation.passwordRequired')),
 })
 
 export const identifierSchema = z.object({
-  identifier: z
-    .string()
-    .min(1, i18n.t('auth:validation.identifierRequired'))
-    .trim()
-    .toLowerCase(),
+  identifier: z.string().min(1, i18n.t('auth:validation.identifierRequired')).trim().toLowerCase(),
 })
-
-export const resetPasswordSchema = z
-  .object({
-    code: z
-      .string()
-      .length(6, i18n.t('auth:validation.codeLength'))
-      .regex(/^\d+$/, i18n.t('auth:validation.codeNumeric')),
-  })
-  .and(passwordWithConfirmSchema)
 
 export const newPasswordSchema = passwordWithConfirmSchema

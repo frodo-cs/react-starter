@@ -1,14 +1,10 @@
 import { Link } from '@tanstack/react-router'
-import { LayoutDashboard, ChevronRight } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
+import { ChevronRight, LayoutDashboard } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+
 import { ROUTES } from '@/constants/routes'
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 
 interface SidebarProps {
   onItemClick?: () => void
@@ -29,9 +25,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
     <Card>
       <CardHeader className='pb-2'>
         <div className='flex items-center gap-2'>
-          <CardTitle className='text-sm font-bold'>
-            {t('layout.sidebar')}
-          </CardTitle>
+          <CardTitle className='text-sm font-bold'>{t('layout.sidebar')}</CardTitle>
         </div>
         <CardDescription className='text-xs font-medium text-muted-foreground'>
           {t('layout.sidebar')}
@@ -48,8 +42,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
                 className: 'bg-primary text-primary-foreground',
               }}
               inactiveProps={{
-                className:
-                  'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                className: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
               }}
               className='group flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200'
             >

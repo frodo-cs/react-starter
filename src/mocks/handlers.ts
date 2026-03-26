@@ -42,10 +42,7 @@ export const handlers = [
       )
     }
 
-    return HttpResponse.json(
-      { message: 'Invalid credentials' },
-      { status: 401 }
-    )
+    return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 })
   }),
 
   // ─── Registration ─────────────────────────────────────────────────────────────
@@ -54,9 +51,7 @@ export const handlers = [
 
     await sleep(1000)
 
-    const existingUser = registeredUsers.find(
-      (u) => u.username === body.identifier
-    )
+    const existingUser = registeredUsers.find((u) => u.username === body.identifier)
     if (existingUser) {
       return HttpResponse.json('Username already in use', { status: 409 })
     }
@@ -88,9 +83,7 @@ export const handlers = [
 
     await sleep(1000)
 
-    const userExists = registeredUsers.some(
-      (u) => u.username === body.identifier
-    )
+    const userExists = registeredUsers.some((u) => u.username === body.identifier)
 
     if (userExists) {
       console.info(`[MSW] Password reset link sent to ${body.identifier}`)
