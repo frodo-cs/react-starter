@@ -1,9 +1,13 @@
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 
+import { useThemeStore } from '@/stores/theme-store'
+
 export function Toaster({ ...props }: ToasterProps) {
+  const { theme } = useThemeStore()
+
   return (
     <Sonner
-      theme='light'
+      theme={theme}
       className='toaster group [&_div[data-content]]:w-full'
       style={
         {

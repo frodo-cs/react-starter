@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AuthLayout } from '@/components/layout/auth-layout'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -22,7 +23,7 @@ export function ForgotPassword() {
 
   if (submitted) {
     return (
-      <div className='flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
+      <AuthLayout>
         <Card className='w-full max-w-md'>
           <CardHeader className='text-center'>
             <div className='mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
@@ -53,12 +54,12 @@ export function ForgotPassword() {
             </Button>
           </CardFooter>
         </Card>
-      </div>
+      </AuthLayout>
     )
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
+    <AuthLayout>
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>
           <CardTitle className='text-3xl font-bold tracking-tight text-foreground'>
@@ -83,6 +84,6 @@ export function ForgotPassword() {
           </Link>
         </CardFooter>
       </Card>
-    </div>
+    </AuthLayout>
   )
 }

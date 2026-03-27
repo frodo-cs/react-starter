@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
+import { AuthLayout } from '@/components/layout/auth-layout'
 import {
   Card,
   CardContent,
@@ -17,7 +18,7 @@ export function SignUp() {
   const { t } = useTranslation('auth')
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
+    <AuthLayout>
       <Card className='w-full max-w-md'>
         <CardHeader className='text-center'>
           <CardTitle className='text-3xl font-bold tracking-tight text-foreground'>
@@ -44,6 +45,6 @@ export function SignUp() {
           </p>
         </CardFooter>
       </Card>
-    </div>
+    </AuthLayout>
   )
 }

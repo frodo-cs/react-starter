@@ -29,9 +29,6 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.161.1
         version: 1.161.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@tanstack/zod-adapter':
-        specifier: ^1.161.1
-        version: 1.161.1(@tanstack/react-router@1.161.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(zod@4.3.6)
       axios:
         specifier: ^1.13.5
         version: 1.13.5
@@ -1473,13 +1470,6 @@ packages:
   '@tanstack/virtual-file-routes@1.154.7':
     resolution: {integrity: sha512-cHHDnewHozgjpI+MIVp9tcib6lYEQK5MyUr0ChHpHFGBl8Xei55rohFK0I0ve/GKoHeioaK42Smd8OixPp6CTg==}
     engines: {node: '>=12'}
-
-  '@tanstack/zod-adapter@1.161.1':
-    resolution: {integrity: sha512-S38+Odi3Rybm3UYiRi9tSdABM6QtBgiwxduXZgzygYW32OQFLAmJCjiAWwyC0fMRjzHwAT1ZRxS0rb3FRW7wOA==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      '@tanstack/react-router': '>=1.43.2'
-      zod: ^3.23.8
 
   '@testing-library/jest-dom@6.9.1':
     resolution: {integrity: sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA==}
@@ -5365,11 +5355,6 @@ snapshots:
   '@tanstack/store@0.8.1': {}
 
   '@tanstack/virtual-file-routes@1.154.7': {}
-
-  '@tanstack/zod-adapter@1.161.1(@tanstack/react-router@1.161.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(zod@4.3.6)':
-    dependencies:
-      '@tanstack/react-router': 1.161.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      zod: 4.3.6
 
   '@testing-library/jest-dom@6.9.1':
     dependencies:
